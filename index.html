@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Millennium Profile</title>
+    <!-- Loading Tailwind CSS --><script src="https://cdn.tailwindcss.com"></script>
+    <!-- Loading D3.js for the chart --><script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        /* D3 Chart text styling */
+        .chart-label-title {
+            font-size: 1.5rem; /* Tailwind text-2xl equivalent */
+            font-weight: 700; /* Tailwind font-bold equivalent */
+            fill: white;
+            text-shadow: 0 0 3px rgba(0,0,0,0.5);
+            text-anchor: middle; /* Center text horizontally */
+        }
+        .chart-label-score {
+            font-size: 1.25rem; /* Tailwind text-xl equivalent */
+            font-weight: 500; /* Tailwind font-medium equivalent */
+            fill: white;
+            text-shadow: 0 0 3px rgba(0,0,0,0.5);
+            text-anchor: middle; /* Center text horizontally */
+        }
+        /* D3 Radar Chart text styling */
+        .radar-label {
+            font-size: 0.875rem; /* text-sm */
+            font-weight: 600; /* font-semibold */
+            text-anchor: middle;
+            fill: #374151; /* gray-700 */
+        }
+
+        /* --- New Drag and Drop Styles --- */
+
+        /* The draggable word itself */
+        .draggable-word {
+            padding: 0.75rem;
+            background-color: white;
+            border: 1px solid #d1d5db; /* gray-300 */
+            border-radius: 0.5rem; /* rounded-lg */
+            cursor: grab;
+            transition: all 0.2s ease;
+            text-align: center;
+            font-weight: 500;
+        }
+        
+        .draggable-word:active {
+            cursor: grabbing;
+        }
+
+        /* Style for the item being dragged */
+        .dragging {
+            opacity: 0.5;
+            background: #f0f9ff; /* light-blue-50 */
+            border: 1px dashed #0284c7; /* blue-600 */
+        }
+
+        /* The empty spot to drop into */
+        .drop-spot {
+            padding: 1rem;
+            border: 2px dashed #9ca3af; /* gray-400 */
+            border-radius: 0.5rem; /* rounded-lg */
+            min-height: 80px; /* Give it a minimum height */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            background-color: #f9fafb; /* gray-50 */
+        }
+        
+        .drop-spot-label {
+            font-weight: 600;
+            color: #4b5563; /* gray-600 */
+        }
+        
+        .drop-spot-subtext {
+            font-size: 0.875rem;
+            color: #6b7280; /* gray-500 */
+        }
+
+        /* When dragging OVER a spot */
+        .drop-spot.highlight,
+        .word-bank-dropzone.highlight {
+            background-color: #dbeafe; /* blue-100 */
+            border-color: #3b82f6; /* blue-500 */
+        }
+
+        /* When a spot is FILLED */
+        .drop-spot-filled {
+            border-style: solid;
+            border-color: #10b981; /* green-500 */
+            background-color: #ecfdf5; /* green-50 */
+            padding: 0.5rem; /* Reduce padding when filled */
+        }
+
+        .drop-spot-filled .drop-spot-label,
+        .drop-spot-filled .drop-spot-subtext {
+            display: none; /* Hide placeholder text */
+        }
+        
+        /* The word bank on the right */
+        .word-bank-dropzone {
+            padding: 1rem;
+            background-color: #f3f4f6; /* gray-100 */
+            border: 2px solid #e5e7eb; /* gray-200 */
+            border-radius: 0.5rem;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem; /* space-y-3 */
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans p-4 md:p-8 min-h-screen flex items-center justify-center">
+
+    <!-- Main Test Page Container --><main id="test-page" class="container bg-white rounded-xl shadow-2xl p-6 md:p-10 w-full max-w-4xl mx-auto">
+        <h1 class="text-3xl md:text-4xl font-bold text-center mb-3 text-blue-700">Millennium Profile</h1>
+        <p class="text-center text-gray-600 mb-8">
+            For each question, drag the words from the "Word Choices" into the slots on the left.
+        </p>
+
+        <!-- New Question Counter -->
+        <p id="question-counter" class="text-center text-lg font-semibold text-gray-700 mb-4"></p>
+
+        <!-- Questions Container --><div id="questions-container" class="space-y-6">
+            <!-- All 24 questions will be rendered here by JS, but hidden -->
+        </div>
+
+        <!-- Navigation/Action Buttons -->
+        <div class="mt-10 flex flex-col items-center justify-center gap-4">
+            
+            <!-- Developer Fill Button -->
+            <button id="dev-fill-button" 
+                    class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-8 rounded-lg shadow-lg transition-all duration-300 w-full sm:w-auto">
+                Developer: Random Fill
+            </button>
+            
+            <!-- Navigation buttons -->
+            <div class="flex flex-row justify-center gap-4 w-full sm:w-auto">
+                <button id="prev-button" 
+                        class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-8 rounded-lg shadow-lg transition-all duration-300 w-1/2 sm:w-auto">
+                    Previous
+                </button>
+                <button id="next-button" 
+                        class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg shadow-lg transition-all duration-300 w-1/2 sm:w-auto"
+                        disabled>
+                    Next
+                </button>
+            </div>
+            
+            <!-- Save Button (hidden initially) -->
+            <button id="save-button" 
+                    class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg shadow-lg transition-all duration-300 disabled:bg-gray-400 disabled:cursor-not-allowed w-full sm:w-auto"
+                    disabled style="display: none;">
+                Show Results
+            </button>
+        </div>
+        <p id="error-message" class="text-red-600 font-semibold mt-4 h-6 text-center"></p>
+        <p id="success-message" class="text-green-600 font-semibold mt-4 h-6 text-center"></p>
+    </main>
+
+    <!-- Results Page Container (hidden by default) 
+    --><div id="results-page" class="hidden fixed inset-0 bg-gray-100 p-4 overflow-y-auto">
+        <div class="container bg-white rounded-xl shadow-2xl p-6 md:p-10 w-full max-w-5xl mx-auto flex flex-col items-center my-auto">
+            <h1 class="text-3xl md:text-4xl font-bold text-center mb-6 text-blue-700">Your Profile Results</h1>
+            
+            <!-- NEW: Grid container for multiple charts -->
+            <div class="grid grid-cols-1 md:grid-cols-1 gap-8 w-full">
+
+                <!-- Chart 1: Quadrant Chart -->
+                <div class="bg-gray-50 rounded-lg p-4 shadow-inner">
+                    <h2 class="text-xl font-bold text-center text-gray-800 mb-4">Quadrant Chart</h2>
+                    <div id="quadrant-chart-container" class="w-full h-[60vh] overflow-hidden">
+                        <svg id="quadrant-chart" class="w-full h-full"></svg>
+                    </div>
+                </div>
+
+                <!-- Chart 3: Donut Chart -->
+                <div class="bg-gray-50 rounded-lg p-4 shadow-inner">
+                    <h2 class="text-xl font-bold text-center text-gray-800 mb-4">Donut Chart (Proportions)</h2>
+                    <div id="donut-chart-container" class="w-full h-[50vh] overflow-hidden">
+                        <svg id="donut-chart" class="w-full h-full"></svg>
+                    </div>
+                </div>
+
+            </div>
+            
+            <div class="text-center mt-8">
+                <button id="back-to-test-button" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-8 rounded-lg shadow-lg transition-all duration-300">
+                    Back to Test
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        // --- PAGE ELEMENTS ---
+        const testPage = document.getElementById('test-page');
+        const resultsPage = document.getElementById('results-page');
+        const questionsContainer = document.getElementById('questions-container');
+        const saveButton = document.getElementById('save-button');
+        const successMessage = document.getElementById('success-message');
+        const errorMessage = document.getElementById('error-message');
+        const backToTestButton = document.getElementById('back-to-test-button');
+        const devFillButton = document.getElementById('dev-fill-button');
+        
+        const prevButton = document.getElementById('prev-button');
+        const nextButton = document.getElementById('next-button');
+        const questionCounter = document.getElementById('question-counter');
+
+        // --- STATE ---
+        let currentQuestionIndex = 0;
+        const totalQuestions = 24;
+        let draggedItem = null;
+
+        // --- QUESTION DATA ---
+        const questionsData = [
+            // Q1
+            [
+                { word: "Gentle, Kindly", color: "green" },
+                { word: "Persuasive, convincing", color: "yellow" },
+                { word: "Humble, reserved", color: "blue" },
+                { word: "Original, inventive", color: "red" }
+            ],
+            // Q2
+            [
+                { word: "Attractive, charming", color: "yellow" },
+                { word: "Cooperative, agreeable", color: "blue" },
+                { word: "Stubborn, unyielding", color: "red" },
+                { word: "Pleasing, Pleasant", color: "green" }
+            ],
+            // Q3
+            [
+                { word: "Easily lead, follower", color: "blue" },
+                { word: "Bold, daring", color: "red" },
+                { word: "Loyal, faithful", color: "green" },
+                { word: "Charming, delightful", color: "yellow" }
+            ],
+            // Q4
+            [
+                { word: "Open-minded, receptive", color: "blue" },
+                { word: "Obliging, helpful", color: "green" },
+                { word: "Will-strong, strong willed", color: "red" },
+                { word: "Cheerful, joyful", color: "yellow" }
+            ],
+            // Q5
+            [
+                { word: "Jovial, joking", color: "yellow" },
+                { word: "Precise, exact", color: "blue" },
+                { word: "Gutsy, brazen", color: "red" },
+                { word: "Even tempered, calm", color: "green" }
+            ],
+            // Q6
+            [
+                { word: "Competitive, seeking to win", color: "red" },
+                { word: "Considerate, caring, thoughtful", color: "green" },
+                { word: "Out-going, fun loving", color: "yellow" },
+                { word: "Harmonious, agreeable", color: "blue" }
+            ],
+            // Q7
+            [
+                { word: "Fussy, hard to please", color: "blue" },
+                { word: "Obedient, dutiful", color: "green" },
+                { word: "Unconquerable, determined", color: "red" },
+                { word: "Playful, full of fun", color: "yellow" }
+            ],
+            // Q8
+            [
+                { word: "Brave, courageous", color: "red" },
+                { word: "Inspiring, motivating", color: "yellow" },
+                { word: "Submissive, yielding", color: "green" },
+                { word: "Timid, shy quiet", color: "blue" }
+            ],
+            // Q9
+            [
+                { word: "Sociable", color: "yellow" },
+                { word: "Patient", color: "green" },
+                { word: "Self-reliant, independent", color: "red" },
+                { word: "Mild, reserved", color: "blue" }
+            ],
+            // Q10
+            [
+                { word: "Adventurous", color: "red" },
+                { word: "Receptive, open to suggestions", color: "blue" },
+                { word: "Warm, friendly", color: "yellow" },
+                { word: "Moderate", color: "green" }
+            ],
+            // Q11
+            [
+                { word: "Talkative, chatty", color: "yellow" },
+                { word: "Controlled, restrained", color: "green" },
+                { word: "Conventional", color: "blue" },
+                { word: "Decisive, certain", color: "red" }
+            ],
+            // Q12
+            [
+                { word: "Polished, smooth talker", color: "yellow" },
+                { word: "Daring, risk-taker", color: "red" },
+                { word: "Diplomatic, tactful", color: "blue" },
+                { word: "Satisfied, content", color: "green" }
+            ],
+            // Q13
+            [
+                { word: "Aggressive, challenging", color: "red" },
+                { word: "Outgoing, entertaining", color: "yellow" },
+                { word: "Life of party, ebullient", color: "green" },
+                { word: "Fearful, afraid", color: "blue" }
+            ],
+            // Q14
+            [
+                { word: "Cautious, wary", color: "blue" },
+                { word: "Determined, decided", color: "red" },
+                { word: "Convincing, assuring", color: "yellow" },
+                { word: "Good-natured, pleasant", color: "green" }
+            ],
+            // Q15
+            [
+                { word: "Willing, compliant", color: "green" },
+                { word: "Eager, anxious", color: "yellow" },
+                { word: "Agreeable, Consenting", color: "blue" },
+                { word: "High-spirited, lively, enthusiastic", color: "red" }
+            ],
+            // Q16
+            [
+                { word: "Confident, assured", color: "yellow" },
+                { word: "Compassionate, compassionate", color: "blue" },
+                { word: "Tolerant", color: "green" },
+                { word: "Assertive, aggressive", color: "red" }
+            ],
+            // Q17
+            [
+                { word: "Well disciplined, self-controlled", color: "blue" },
+                { word: "Generous, willing to share", color: "green" },
+                { word: "Animated, uses gestures for expression", color: "yellow" },
+                { word: "Persistent, unrelenting", color: "red" }
+            ],
+            // Q18 (Duplicate of Q8 text, but with new colors from your doc)
+            [
+                { word: "Brave, courageous", color: "red" },
+                { word: "Inspiring, motivating", color: "yellow" },
+                { word: "Submissive, yielding", color: "blue" },
+                { word: "Timid, shy quiet", color: "green" }
+            ],
+            // Q19
+            [
+                { word: "Respectful", color: "blue" },
+                { word: "Pioneering, exploring", color: "red" },
+                { word: "Optimistic, positive", color: "yellow" },
+                { word: "Accommodating, willing to please", color: "green" }
+            ],
+            // Q20
+            [
+                { word: "Argumentative, Controlling", color: "red" },
+                { word: "Adaptable, flexible", color: "green" },
+                { word: "Nonchalant, indifferent", color: "blue" },
+                { word: "Light-hearted, carefree", color: "yellow" }
+            ],
+            // Q21
+            [
+                { word: "Trusting, faith in others", color: "yellow" },
+                { word: "Contented, satisfied", color: "green" },
+                { word: "Positive, sure", color: "red" },
+                { word: "Peaceful, tranquil", color: "blue" }
+            ],
+            // Q22
+            [
+                { word: "Good mixer, sociable", color: "yellow" },
+                { word: "Educated, Knowledgeable", color: "blue" },
+                { word: "Vigorous, energetic", color: "red" },
+                { word: "Lenient", color: "green" }
+            ],
+            // Q23
+            [
+                { word: "Compassionate", color: "yellow" },
+                { word: "Accurate, correct", color: "blue" },
+                { word: "Outspoken, speaks freely", color: "red" },
+                { word: "Restrained, reserved, controlled", color: "green" }
+            ],
+            // Q24
+            [
+                { word: "Restless, unable to rest or relax", color: "red" },
+                { word: "Neighborly, friendly", color: "green" },
+                { word: "Popular, liked by many", color: "yellow" },
+                { word: "Neat, organized", color: "blue" }
+            ]
+        ];
+
+        // --- QUESTION CARD FUNCTIONS ---
+
+        function createDraggableWord(word, color) {
+            const wordDiv = document.createElement('div');
+            wordDiv.className = 'draggable-word';
+            wordDiv.draggable = true;
+            wordDiv.textContent = word;
+            wordDiv.dataset.color = color;
+            return wordDiv;
+        }
+
+        function createQuestionCard(questionWords, index) {
+            const card = document.createElement('div');
+            card.className = 'question-card bg-white border border-gray-200 rounded-lg p-5 shadow-sm';
+            card.dataset.questionId = index;
+            card.dataset.status = 'invalid'; // Invalid by default
+            
+            if (index !== 0) {
+                card.style.display = 'none';
+            }
+            
+            // Create word bank items
+            const wordBankWords = questionWords.map(item => createDraggableWord(item.word, item.color).outerHTML).join('');
+
+            card.innerHTML = `
+                <h2 class="text-xl font-semibold text-gray-900 mb-2">Question ${index + 1}</h2>
+                <p class="text-gray-600 mb-4 text-sm">Drag the words from the "Word Choices" (right) into "Your Order" slots (left).</p>
+                <div class="flex flex-col md:flex-row gap-6">
+                    
+                    <!-- Left Column: Rank Spots -->
+                    <div class="flex-1 space-y-3">
+                        <h3 class="font-semibold text-gray-700">Your Order:</h3>
+                        <div class="drop-spot" data-rank="1">
+                            <span class="drop-spot-label">1st Place</span>
+                            <span class="drop-spot-subtext">(Most like you)</span>
+                        </div>
+                        <div class="drop-spot" data-rank="2">
+                            <span class="drop-spot-label">2nd Place</span>
+                        </div>
+                        <div class="drop-spot" data-rank="3">
+                            <span class="drop-spot-label">3rd Place</span>
+                        </div>
+                        <div class="drop-spot" data-rank="4">
+                            <span class="drop-spot-label">4th Place</span>
+                            <span class="drop-spot-subtext">(Least like you)</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Right Column: Word Bank -->
+                    <div class="flex-1">
+                         <h3 class="font-semibold text-gray-700">Word Choices:</h3>
+                         <div class="word-bank-dropzone mt-2">
+                            ${wordBankWords}
+                         </div>
+                    </div>
+                </div>
+                <div class="error-message text-red-600 text-sm font-medium mt-3 h-5"></div>
+            `;
+            return card;
+        }
+
+        // --- NAVIGATION FUNCTION ---
+
+        function showQuestion(index) {
+            const allCards = document.querySelectorAll('.question-card');
+            allCards.forEach(card => {
+                card.style.display = 'none';
+            });
+            if (allCards[index]) {
+                allCards[index].style.display = 'block';
+            }
+            questionCounter.textContent = `Question ${index + 1} of ${totalQuestions}`;
+            prevButton.disabled = (index === 0);
+            
+            if (index === totalQuestions - 1) {
+                nextButton.style.display = 'none';
+                saveButton.style.display = 'inline-flex';
+                // Final check for all cards before enabling save
+                checkFormCompletion(true);
+            } else {
+                nextButton.style.display = 'inline-flex';
+                saveButton.style.display = 'none';
+                // Check current card to enable next
+                checkFormCompletion(false);
+            }
+        }
+
+        // --- VALIDATION FUNCTIONS ---
+
+        function validateCard(card) {
+            const bank = card.querySelector('.word-bank-dropzone');
+            const wordsLeft = bank.querySelectorAll('.draggable-word').length;
+            const errorMessage = card.querySelector('.error-message');
+            
+            if (wordsLeft === 0) {
+                card.dataset.status = 'valid';
+                if (errorMessage) errorMessage.textContent = '';
+                return true;
+            } else {
+                card.dataset.status = 'invalid';
+                if (errorMessage) errorMessage.textContent = `You still need to assign ${wordsLeft} words.`;
+                return false;
+            }
+        }
+
+        function checkFormCompletion(checkAll = false) {
+            const allCards = document.querySelectorAll('.question-card');
+            if (checkAll) {
+                // Check all cards for the final save button
+                let allValid = true;
+                allCards.forEach(card => {
+                    if (card.dataset.status !== 'valid') {
+                        allValid = false;
+                    }
+                });
+                saveButton.disabled = !allValid;
+            } else {
+                // Check only the current card for the 'next' button
+                const currentCard = allCards[currentQuestionIndex];
+                if (currentCard) {
+                    nextButton.disabled = (currentCard.dataset.status === 'invalid');
+                }
+            }
+        }
+
+        // --- CALCULATION & CHARTING FUNCTIONS ---
+
+        function calculateScores() {
+            const pointMap = { "1": 10, "2": 6, "3": 3, "4": 1 };
+            let scores = { blue: 0, red: 0, green: 0, yellow: 0 };
+            const allCards = document.querySelectorAll('.question-card');
+            
+            allCards.forEach(card => {
+                const spots = card.querySelectorAll('.drop-spot');
+                spots.forEach(spot => {
+                    const rank = spot.dataset.rank;
+                    const word = spot.querySelector('.draggable-word');
+                    if (word) {
+                        const color = word.dataset.color;
+                        const points = pointMap[rank];
+                        if (color && points != null) {
+                            scores[color] += points;
+                        }
+                    }
+                });
+            });
+            return scores;
+        }
+
+        // --- CHART 1: QUADRANT CHART ---
+        function drawQuadrantChart(scores) {
+            const chartContainer = document.getElementById('quadrant-chart-container');
+            if (!chartContainer) return;
+            const width = chartContainer.clientWidth;
+            const height = chartContainer.clientHeight;
+            
+            const svg = d3.select("#quadrant-chart")
+                .attr("viewBox", `0 0 ${width} ${height}`)
+                .attr("preserveAspectRatio", "xMidYMid meet");
+            svg.html("");
+
+            const centerX = width / 2;
+            const centerY = height / 2;
+
+            const data = [
+                { name: "Blue", value: scores.blue, color: "#3B82F6", quadrant: 'top-left' },
+                { name: "Red", value: scores.red, color: "#EF4444", quadrant: 'top-right' },
+                { name: "Green", value: scores.green, color: "#22C55E", quadrant: 'bottom-left' },
+                { name: "Yellow", value: scores.yellow, color: "#FACC15", quadrant: 'bottom-right' } // <-- CHANGED COLOR
+            ].filter(d => d.value > 0);
+
+            if (data.length === 0) return;
+
+            data.forEach(d => { d.side = Math.sqrt(d.value); });
+            const maxSide = d3.max(data, d => d.side);
+            const maxRadius = Math.min(width / 2, height / 2) * 0.95;
+            const scale = maxSide > 0 ? maxRadius / maxSide : 1;
+
+            const chartGroup = svg.append("g")
+                .attr("transform", `translate(${centerX}, ${centerY})`);
+
+            data.forEach(d => {
+                const scaledSide = d.side * scale;
+                let x, y, textX, textY;
+                switch (d.quadrant) {
+                    case 'top-left': x = -scaledSide; y = -scaledSide; textX = -scaledSide / 2; textY = -scaledSide / 2; break;
+                    case 'top-right': x = 0; y = -scaledSide; textX = scaledSide / 2; textY = -scaledSide / 2; break;
+                    case 'bottom-left': x = -scaledSide; y = 0; textX = -scaledSide / 2; textY = scaledSide / 2; break;
+                    case 'bottom-right': x = 0; y = 0; textX = scaledSide / 2; textY = scaledSide / 2; break;
+                }
+
+                chartGroup.append("rect")
+                    .attr("x", x)
+                    .attr("y", y)
+                    .attr("width", scaledSide)
+                    .attr("height", scaledSide)
+                    .attr("fill", d.color);
+
+                if (scaledSide > 60) {
+                    chartGroup.append("text")
+                        .attr("class", "chart-label-title")
+                        .attr("x", textX)
+                        .attr("y", textY - 10)
+                        .text(d.name);
+                    chartGroup.append("text")
+                        .attr("class", "chart-label-score")
+                        .attr("x", textX)
+                        .attr("y", textY + 16)
+                        .text(d.value);
+                }
+            });
+        }
+
+        // --- CHART 2: AREA (TRIANGLE) CHART ---
+        function drawRadarChart(scores) {
+            // This function is no longer called
+        }
+        
+        // --- CHART 3: DONUT CHART ---
+        function drawDonutChart(scores) {
+            const container = document.getElementById('donut-chart-container');
+            if (!container) return;
+            const width = container.clientWidth;
+            const height = container.clientHeight;
+            const radius = Math.min(width, height) / 2 * 0.9;
+            const innerRadius = radius * 0.6;
+
+            const svg = d3.select("#donut-chart")
+                .attr("viewBox", `0 0 ${width} ${height}`)
+                .attr("preserveAspectRatio", "xMidYMid meet");
+            svg.html("");
+
+            const chartGroup = svg.append("g")
+                .attr("transform", `translate(${width / 2}, ${height / 2})`);
+
+            const data = [
+                { name: "Blue", value: scores.blue, color: "#3B82F6" },
+                { name: "Red", value: scores.red, color: "#EF4444" },
+                { name: "Green", value: scores.green, color: "#22C55E" },
+                { name: "Yellow", value: scores.yellow, color: "#FACC15" } // <-- CHANGED COLOR
+            ].filter(d => d.value > 0);
+
+            if (data.length === 0) return;
+
+            const total = d3.sum(data, d => d.value);
+
+            const pie = d3.pie().value(d => d.value).sort(null);
+            const arc = d3.arc().innerRadius(innerRadius).outerRadius(radius);
+
+            const arcs = chartGroup.selectAll(".arc")
+                .data(pie(data))
+                .enter().append("g")
+                .attr("class", "arc");
+
+            arcs.append("path")
+                .attr("d", arc)
+                .attr("fill", d => d.data.color)
+                .attr("stroke", "white")
+                .style("stroke-width", "2px");
+
+            arcs.append("text")
+                .attr("transform", d => `translate(${arc.centroid(d)})`)
+                .attr("dy", "0.35em")
+                .attr("fill", "white")
+                .attr("text-anchor", "middle")
+                .style("font-size", "1.1rem")
+                .style("font-weight", "600")
+                .style("text-shadow", "0 0 3px rgba(0,0,0,0.7)")
+                .text(d => {
+                    if (total === 0) return "0%";
+                    const percent = (d.data.value / total) * 100;
+                    return `${percent.toFixed(0)}%`;
+                });
+        }
+
+        // --- CHART 4: BUBBLE CHART ---
+        function drawBubbleChart(scores) {
+            // This function is no longer called
+        }
+
+        // --- DRAG AND DROP HANDLERS ---
+        
+        function handleDragStart(e) {
+            const target = e.target.closest('.draggable-word');
+            if (!target) return;
+            
+            draggedItem = target;
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/plain', target.textContent); // Necessary for Firefox
+            setTimeout(() => target.classList.add('dragging'), 0);
+        }
+
+        function handleDragEnd(e) {
+            // This is a cleanup function for drops that *don't* land in a valid dropzone
+            // (e.g., dropped outside the window)
+            if (draggedItem) {
+                draggedItem.classList.remove('dragging');
+                draggedItem = null;
+            }
+            document.querySelectorAll('.highlight').forEach(el => el.classList.remove('highlight'));
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            const dropzone = e.target.closest('.drop-spot, .word-bank-dropzone');
+            if (dropzone) {
+                dropzone.classList.add('highlight');
+            }
+        }
+
+        function handleDragLeave(e) {
+            const dropzone = e.target.closest('.drop-spot, .word-bank-dropzone');
+            if (dropzone) {
+                dropzone.classList.remove('highlight');
+            }
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            
+            // --- FIX V2: Claim the item and prevent race condition ---
+            if (!draggedItem) return; // A drop event somehow fired without a dragged item
+
+            const itemToDrop = draggedItem; // "Claim" the item
+            draggedItem = null; // Prevent handleDragEnd from cleaning up a "successful" drop
+            itemToDrop.classList.remove('dragging'); // Stop the dragging style
+
+            const dropzone = e.target.closest('.drop-spot, .word-bank-dropzone');
+            if (!dropzone) return; // Didn't land in a valid spot
+
+            dropzone.classList.remove('highlight');
+            const card = dropzone.closest('.question-card');
+            
+            // Case 1: Dropping in a Rank Spot
+            if (dropzone.classList.contains('drop-spot')) {
+                // If spot is already full, move existing word back to bank
+                if (dropzone.children.length > 1) { // 2 children = labels + word
+                    const existingWord = dropzone.querySelector('.draggable-word');
+                    if (existingWord) {
+                        card.querySelector('.word-bank-dropzone').appendChild(existingWord);
+                    }
+                }
+                dropzone.appendChild(itemToDrop); // Use local copy
+                dropzone.classList.add('drop-spot-filled');
+            }
+            
+            // Case 2: Dropping back in the Word Bank
+            if (dropzone.classList.contains('word-bank-dropzone')) {
+                const originalSpot = itemToDrop.closest('.drop-spot'); // Use local copy
+                if (originalSpot) {
+                    originalSpot.classList.remove('drop-spot-filled');
+                }
+                dropzone.appendChild(itemToDrop); // Use local copy
+            }
+            
+            // Validate the card that was just changed
+            if (card) {
+                validateCard(card);
+                checkFormCompletion(false); // Check current card for 'next'
+            }
+        }
+
+
+        // --- INITIALIZATION & EVENT LISTENERS ---
+
+        function initialize() {
+            // Render all questions
+            questionsData.forEach((words, index) => {
+                const card = createQuestionCard(words, index);
+                questionsContainer.appendChild(card);
+            });
+            
+            showQuestion(currentQuestionIndex);
+
+            // --- Global Drag and Drop Listeners ---
+            document.addEventListener('dragstart', handleDragStart);
+            document.addEventListener('dragend', handleDragEnd);
+            document.addEventListener('dragover', handleDragOver);
+            document.addEventListener('dragleave', handleDragLeave);
+            document.addEventListener('drop', handleDrop);
+
+            // --- Button Listeners ---
+            saveButton.addEventListener('click', () => {
+                checkFormCompletion(true); // Final check
+                if (!saveButton.disabled) {
+                    const scores = calculateScores();
+                    
+                    testPage.classList.add('hidden');
+                    resultsPage.classList.remove('hidden');
+
+                    setTimeout(() => {
+                        drawQuadrantChart(scores);
+                        // drawRadarChart(scores); // <-- REMOVED
+                        drawDonutChart(scores);
+                        // drawBubbleChart(scores); // <-- REMOVED
+                    }, 10); 
+
+                    successMessage.textContent = 'Answers saved and results calculated!';
+                    setTimeout(() => { successMessage.textContent = ''; }, 3000);
+                }
+            });
+
+            backToTestButton.addEventListener('click', () => {
+                resultsPage.classList.add('hidden');
+                testPage.classList.remove('hidden');
+            });
+            
+            nextButton.addEventListener('click', () => {
+                if (currentQuestionIndex < totalQuestions - 1) {
+                    currentQuestionIndex++;
+                    showQuestion(currentQuestionIndex);
+                }
+            });
+
+            prevButton.addEventListener('click', () => {
+                if (currentQuestionIndex > 0) {
+                    currentQuestionIndex--;
+                    showQuestion(currentQuestionIndex);
+                }
+            });
+
+            devFillButton.addEventListener('click', () => {
+                const allCards = document.querySelectorAll('.question-card');
+                allCards.forEach(card => {
+                    const wordBank = card.querySelector('.word-bank-dropzone');
+                    const spots = card.querySelectorAll('.drop-spot');
+                    const words = Array.from(wordBank.querySelectorAll('.draggable-word'));
+                    
+                    // Shuffle words
+                    for (let i = words.length - 1; i > 0; i--) {
+                        const j = Math.floor(Math.random() * (i + 1));
+                        [words[i], words[j]] = [words[j], words[i]];
+                    }
+                    
+                    // Place words in spots
+                    words.forEach((word, index) => {
+                        if (spots[index]) {
+                            spots[index].appendChild(word);
+                            spots[index].classList.add('drop-spot-filled');
+                        }
+                    });
+                    validateCard(card);
+                });
+
+                successMessage.textContent = 'All answers randomly filled!';
+                setTimeout(() => { successMessage.textContent = ''; }, 3000);
+                
+                currentQuestionIndex = totalQuestions - 1;
+                showQuestion(currentQuestionIndex);
+            });
+
+            // --- Resize Listener ---
+            let resizeTimer;
+            window.addEventListener('resize', () => {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(() => {
+                    if (!resultsPage.classList.contains('hidden')) {
+                        const scores = calculateScores(); 
+                        drawQuadrantChart(scores);
+                        // drawRadarChart(scores); // <-- REMOVED
+                        drawDonutChart(scores);
+                        // drawBubbleChart(scores); // <-- REMOVED
+                    }
+                }, 250);
+            });
+        }
+
+        // Start the app
+        document.addEventListener('DOMContentLoaded', initialize);
+    </script>
+</body>
+</html>
+
+
+
