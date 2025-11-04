@@ -29,9 +29,11 @@
             text-anchor: middle;
             fill: #374151; /* gray-700 */
         }
+        
+        /* --- REMOVED Word Map Text Styles --- */
+
 
         /* --- New Drag and Drop Styles --- */
-
         /* The draggable word itself */
         .draggable-word {
             padding: 0.75rem;
@@ -110,6 +112,14 @@
             flex-direction: column;
             gap: 0.75rem; /* space-y-3 */
         }
+
+        /* --- NEW: Style for Key Words list --- */
+        .key-word-rank-1 { font-weight: 700; color: #1f2937; } /* bold, gray-800 */
+        .key-word-rank-2 { font-weight: 500; color: #374151; } /* medium, gray-700 */
+        .key-word-rank-3 { font-weight: 400; color: #4b5563; opacity: 0.9; } /* normal, gray-600 */
+        .key-word-rank-4 { font-weight: 300; color: #6b7280; opacity: 0.8; } /* light, gray-500 */
+        /* --- END NEW --- */
+
     </style>
 </head>
 <body class="bg-gray-100 font-sans p-4 md:p-8 min-h-screen flex items-center justify-center">
@@ -168,11 +178,62 @@
             <!-- NEW: Grid container for multiple charts -->
             <div class="grid grid-cols-1 md:grid-cols-1 gap-8 w-full">
 
-                <!-- Chart 1: Quadrant Chart -->
+                <!-- REMOVED: Chart 0: Word Map Chart -->
+                
+                <!-- NEW: Key Words Section -->
+                <div class="w-full">
+                    <h2 class="text-3xl font-bold text-center text-gray-800 mb-6">Your Key Words (Ranked #1 & #2)</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-px bg-gray-300 rounded-lg shadow-md overflow-hidden">
+                        
+                        <!-- BLUE (Upper Left) -->
+                        <div class="bg-blue-100 p-6">
+                            <h3 class="text-2xl font-bold text-blue-800 mb-3">BLUE</h3>
+                            <div id="blue-key-words"></div>
+                        </div>
+
+                        <!-- RED (Upper Right) -->
+                        <div class="bg-red-100 p-6">
+                            <h3 class="text-2xl font-bold text-red-800 mb-3">RED</h3>
+                            <div id="red-key-words"></div>
+                        </div>
+
+                        <!-- GREEN (Lower Left) -->
+                        <div class="bg-green-100 p-6">
+                            <h3 class="text-2xl font-bold text-green-800 mb-3">GREEN</h3>
+                            <div id="green-key-words"></div>
+                        </div>
+
+                        <!-- YELLOW (Lower Right) -->
+                        <div class="bg-yellow-100 p-6">
+                            <h3 class="text-2xl font-bold text-yellow-800 mb-3">YELLOW</h3>
+                            <div id="yellow-key-words"></div>
+                        </div>
+                    </div>
+                </div>
+                <!-- END NEW Section -->
+
+
+                <!-- Chart 1: Quadrant Chart (Circle Avg, with Axes) -->
                 <div class="bg-gray-50 rounded-lg p-4 shadow-inner">
-                    <h2 class="text-xl font-bold text-center text-gray-800 mb-4">Quadrant Chart</h2>
+                    <h2 class="text-xl font-bold text-center text-gray-800 mb-4">Quadrant Chart (With Axes)</h2>
                     <div id="quadrant-chart-container" class="w-full h-[60vh] overflow-hidden">
                         <svg id="quadrant-chart" class="w-full h-full"></svg>
+                    </div>
+                </div>
+
+                <!-- NEW: Chart 1.B: Quadrant Chart (Circle Avg, No Axes) -->
+                <div class="bg-gray-50 rounded-lg p-4 shadow-inner">
+                    <h2 class="text-xl font-bold text-center text-gray-800 mb-4">Quadrant Chart (No Axes)</h2>
+                    <div id="quadrant-chart-noaxis-container" class="w-full h-[60vh] overflow-hidden">
+                        <svg id="quadrant-chart-noaxis" class="w-full h-full"></svg>
+                    </div>
+                </div>
+
+                <!-- Chart 1.5: Quadrant Chart (Rectangle Avg) -->
+                <div class="bg-gray-50 rounded-lg p-4 shadow-inner">
+                    <h2 class="text-xl font-bold text-center text-gray-800 mb-4">Quadrant Chart (Rectangle Average)</h2>
+                    <div id="quadrant-chart-rect-container" class="w-full h-[60vh] overflow-hidden">
+                        <svg id="quadrant-chart-rect" class="w-full h-full"></svg>
                     </div>
                 </div>
 
@@ -194,7 +255,7 @@
 
             </div>
 
-            <!-- NEW: Interpretation Section -->
+            <!-- Profile Analysis Section -->
             <div class="w-full mt-12">
                 <h2 class="text-3xl font-bold text-center text-gray-800 mb-6">Your Profile Analysis</h2>
                 <!-- This is now a single container with a 2x2 grid inside -->
@@ -340,7 +401,7 @@
             // Q9
             [
                 { word: "Sociable", color: "yellow" },
-                { word: "Patient", color: "green" },
+                { word: "Patient", color: "green" }, // <-- FIX 1 HERE
                 { word: "Self reliant, independent", color: "red" },
                 { word: "Mild, reserved", color: "blue" }
             ],
@@ -418,7 +479,7 @@
             [
                 { word: "Argumentative, Controlling", color: "red" },
                 { word: "Adaptable, flexible", color: "green" },
-                { word: "Nonchalant, indifferent", color: "blue" },
+                { word: "Nonchalant, indifferent", color: "blue" }, // <-- FIX 2 HERE
                 { word: "Light-hearted, carefree", color: "yellow" }
             ],
             // Q21
@@ -579,27 +640,98 @@
 
         // --- CALCULATION & CHARTING FUNCTIONS ---
 
-        function calculateScores() {
+        // NEW: Collects scores AND ranked word list
+        function collectRankedWords() {
             const pointMap = { "1": 10, "2": 6, "3": 3, "4": 1 };
             let scores = { blue: 0, red: 0, green: 0, yellow: 0 };
+            // This will hold all words, sorted by color
+            let rankedWords = { 
+                blue: [], 
+                red: [], 
+                green: [], 
+                yellow: [] 
+            };
+            
             const allCards = document.querySelectorAll('.question-card');
             
             allCards.forEach(card => {
                 const spots = card.querySelectorAll('.drop-spot');
                 spots.forEach(spot => {
-                    const rank = spot.dataset.rank;
+                    const rank = spot.dataset.rank; // "1", "2", "3", "4"
                     const word = spot.querySelector('.draggable-word');
                     if (word) {
                         const color = word.dataset.color;
                         const points = pointMap[rank];
                         if (color && points != null) {
+                            // 1. Add to total score
                             scores[color] += points;
+                            // 2. Add to ranked word list
+                            rankedWords[color].push({
+                                text: word.textContent,
+                                rank: rank
+                            });
                         }
                     }
                 });
             });
-            return scores;
+            
+            // Sort each color's word list by rank
+            for (const color in rankedWords) {
+                rankedWords[color].sort((a, b) => a.rank - b.rank);
+            }
+            
+            return { scores, rankedWords };
         }
+
+        // DEPRECATED: calculateScores() is now part of collectRankedWords()
+        function calculateScores() {
+            // This function is no longer called, but we leave it
+            // just in case.
+            const data = collectRankedWords();
+            return data.scores;
+        }
+
+        // --- REMOVED: CHART 0: WORD MAP CHART ---
+        
+        // --- NEW: Function to populate Key Words ---
+        function populateWordAnalysis(scores, rankedWords) { // <-- Now receives scores
+            const colors = ['blue', 'red', 'green', 'yellow'];
+            colors.forEach(color => {
+                const container = document.getElementById(`${color}-key-words`);
+                if (!container) return;
+
+                // 1. Calculate word capacity based on 20 points per word
+                const wordCapacity = Math.floor(scores[color] / 20); // <-- UPDATED RULE
+
+                // 2. Get all ranked words (they are already sorted by rank from collectRankedWords)
+                const allRankedWords = rankedWords[color];
+
+                // 3. Fill the list based on capacity
+                // This automatically takes #1s, then #2s, then #3s, etc., up to the limit
+                let wordsToDisplay = allRankedWords.slice(0, wordCapacity);
+
+
+                if (wordsToDisplay.length === 0) {
+                     if (scores[color] > 0) {
+                         // This handles cases where score is > 0 but < 20
+                        container.innerHTML = `<p class="text-sm italic text-gray-600">No words to display at this point level.</p>`;
+                    } else {
+                        container.innerHTML = `<p class="text-sm italic text-gray-600">No score for this color.</p>`;
+                    }
+                    return;
+                }
+
+                // 5. Create the simple bulleted list
+                const listHtml = wordsToDisplay.map(word => {
+                    // Add a style based on rank
+                    return `<li class="key-word-rank-${word.rank}">${word.text}</li>`;
+                }).join('');
+                
+                container.innerHTML = `<ul class="list-disc list-inside space-y-1">${listHtml}</ul>`;
+            });
+        }
+        // --- END NEW FUNCTION ---
+
 
         // --- CHART 1: QUADRANT CHART ---
         function drawQuadrantChart(scores) {
@@ -621,20 +753,29 @@
                 { name: "Red", value: scores.red, color: "#EF4444", quadrant: 'top-right' },
                 { name: "Green", value: scores.green, color: "#22C55E", quadrant: 'bottom-left' },
                 { name: "Yellow", value: scores.yellow, color: "#FACC15", quadrant: 'bottom-right' } // <-- CHANGED COLOR
-            ].filter(d => d.value > 0);
+            ];
 
-            if (data.length === 0) return;
+            // --- NEW LOGIC: Scale based on MAX possible score (240) ---
+            const maxPossibleScore = 240;
+            const maxPossibleSide = Math.sqrt(maxPossibleScore);
+            const maxRadius = Math.min(width / 2, height / 2) * 0.95; // 95% of container
+            const scale = maxRadius / maxPossibleSide; // This is our pixels-per-sqrt(point)
 
-            data.forEach(d => { d.side = Math.sqrt(d.value); });
-            const maxSide = d3.max(data, d => d.side);
-            const maxRadius = Math.min(width / 2, height / 2) * 0.95;
-            const scale = maxSide > 0 ? maxRadius / maxSide : 1;
+            // --- NEW LOGIC: Calculate Average Circle ---
+            const averageScore = 120;
+            const averageSide = Math.sqrt(averageScore);
+            const averageRadius = averageSide * scale;
+            // --- END NEW LOGIC ---
 
             const chartGroup = svg.append("g")
                 .attr("transform", `translate(${centerX}, ${centerY})`);
 
+            // --- Draw the squares FIRST ---
             data.forEach(d => {
-                const scaledSide = d.side * scale;
+                // Calculate side length based on actual value
+                d.side = Math.sqrt(d.value);
+                const scaledSide = d.side * scale; // Use the new fixed scale
+
                 let x, y, textX, textY;
                 switch (d.quadrant) {
                     case 'top-left': x = -scaledSide; y = -scaledSide; textX = -scaledSide / 2; textY = -scaledSide / 2; break;
@@ -663,7 +804,228 @@
                         .text(d.value);
                 }
             });
+
+            // --- NEW: Draw the axes to divide colors ---
+            const axisColor = "#4b5563"; // gray-600
+            const axisWidth = 2;
+            
+            // Y-axis (vertical)
+            chartGroup.append("line")
+                .attr("x1", 0)
+                .attr("y1", -maxRadius)
+                .attr("x2", 0)
+                .attr("y2", maxRadius)
+                .attr("stroke", axisColor)
+                .attr("stroke-width", axisWidth);
+
+            // X-axis (horizontal)
+            chartGroup.append("line")
+                .attr("x1", -maxRadius)
+                .attr("y1", 0)
+                .attr("x2", maxRadius)
+                .attr("y2", 0)
+                .attr("stroke", axisColor)
+                .attr("stroke-width", axisWidth);
+            // --- END NEW ---
+
+            // --- Draw the average circle LAST (so it's on top) ---
+            chartGroup.append("circle")
+                .attr("cx", 0)
+                .attr("cy", 0)
+                .attr("r", averageRadius)
+                .attr("fill", "none")
+                .attr("stroke", "#6b7280") // gray-500
+                .attr("stroke-width", 2)
+                .attr("stroke-dasharray", "4 4"); // Make it dashed
         }
+
+        // --- NEW: CHART 1.B: QUADRANT CHART (NO AXES) ---
+        function drawQuadrantChartNoAxis(scores) {
+            const chartContainer = document.getElementById('quadrant-chart-noaxis-container');
+            if (!chartContainer) return;
+            const width = chartContainer.clientWidth;
+            const height = chartContainer.clientHeight;
+            
+            const svg = d3.select("#quadrant-chart-noaxis")
+                .attr("viewBox", `0 0 ${width} ${height}`)
+                .attr("preserveAspectRatio", "xMidYMid meet");
+            svg.html("");
+
+            const centerX = width / 2;
+            const centerY = height / 2;
+
+            const data = [
+                { name: "Blue", value: scores.blue, color: "#3B82F6", quadrant: 'top-left' },
+                { name: "Red", value: scores.red, color: "#EF4444", quadrant: 'top-right' },
+                { name: "Green", value: scores.green, color: "#22C55E", quadrant: 'bottom-left' },
+                { name: "Yellow", value: scores.yellow, color: "#FACC15", quadrant: 'bottom-right' }
+            ];
+
+            const maxPossibleScore = 240;
+            const maxPossibleSide = Math.sqrt(maxPossibleScore);
+            const maxRadius = Math.min(width / 2, height / 2) * 0.95; 
+            const scale = maxRadius / maxPossibleSide; 
+
+            const averageScore = 120;
+            const averageSide = Math.sqrt(averageScore);
+            const averageRadius = averageSide * scale;
+
+            const chartGroup = svg.append("g")
+                .attr("transform", `translate(${centerX}, ${centerY})`);
+
+            // --- Draw the squares FIRST ---
+            data.forEach(d => {
+                d.side = Math.sqrt(d.value);
+                const scaledSide = d.side * scale; 
+
+                let x, y, textX, textY;
+                switch (d.quadrant) {
+                    case 'top-left': x = -scaledSide; y = -scaledSide; textX = -scaledSide / 2; textY = -scaledSide / 2; break;
+                    case 'top-right': x = 0; y = -scaledSide; textX = scaledSide / 2; textY = -scaledSide / 2; break;
+                    case 'bottom-left': x = -scaledSide; y = 0; textX = -scaledSide / 2; textY = scaledSide / 2; break;
+                    case 'bottom-right': x = 0; y = 0; textX = scaledSide / 2; textY = scaledSide / 2; break;
+                }
+
+                chartGroup.append("rect")
+                    .attr("x", x)
+                    .attr("y", y)
+                    .attr("width", scaledSide)
+                    .attr("height", scaledSide)
+                    .attr("fill", d.color);
+
+                if (scaledSide > 60) {
+                    chartGroup.append("text")
+                        .attr("class", "chart-label-title")
+                        .attr("x", textX)
+                        .attr("y", textY - 10)
+                        .text(d.name);
+                    chartGroup.append("text")
+                        .attr("class", "chart-label-score")
+                        .attr("x", textX)
+                        .attr("y", textY + 16)
+                        .text(d.value);
+                }
+            });
+
+            // --- AXES ARE REMOVED IN THIS VERSION ---
+
+            // --- Draw the average circle LAST (so it's on top) ---
+            chartGroup.append("circle")
+                .attr("cx", 0)
+                .attr("cy", 0)
+                .attr("r", averageRadius)
+                .attr("fill", "none")
+                .attr("stroke", "#6b7280") // gray-500
+                .attr("stroke-width", 2)
+                .attr("stroke-dasharray", "4 4"); // Make it dashed
+        }
+        // --- END NEW FUNCTION ---
+
+
+        // --- CHART 1.5: QUADRANT CHART (RECTANGLE) ---
+        function drawQuadrantChartRectangle(scores) {
+            const chartContainer = document.getElementById('quadrant-chart-rect-container');
+            if (!chartContainer) return;
+            const width = chartContainer.clientWidth;
+            const height = chartContainer.clientHeight;
+            
+            const svg = d3.select("#quadrant-chart-rect")
+                .attr("viewBox", `0 0 ${width} ${height}`)
+                .attr("preserveAspectRatio", "xMidYMid meet");
+            svg.html("");
+
+            const centerX = width / 2;
+            const centerY = height / 2;
+
+            const data = [
+                { name: "Blue", value: scores.blue, color: "#3B82F6", quadrant: 'top-left' },
+                { name: "Red", value: scores.red, color: "#EF4444", quadrant: 'top-right' },
+                { name: "Green", value: scores.green, color: "#22C55E", quadrant: 'bottom-left' },
+                { name: "Yellow", value: scores.yellow, color: "#FACC15", quadrant: 'bottom-right' }
+            ];
+
+            const maxPossibleScore = 240;
+            const maxPossibleSide = Math.sqrt(maxPossibleScore);
+            const maxRadius = Math.min(width / 2, height / 2) * 0.95; 
+            const scale = maxRadius / maxPossibleSide; 
+
+            const averageScore = 120;
+            const averageSide = Math.sqrt(averageScore);
+            const averageScaledSide = averageSide * scale; // This is the 'radius' for the rect
+
+            const chartGroup = svg.append("g")
+                .attr("transform", `translate(${centerX}, ${centerY})`);
+
+            // --- Draw the squares FIRST ---
+            data.forEach(d => {
+                d.side = Math.sqrt(d.value);
+                const scaledSide = d.side * scale; 
+
+                let x, y, textX, textY;
+                switch (d.quadrant) {
+                    case 'top-left': x = -scaledSide; y = -scaledSide; textX = -scaledSide / 2; textY = -scaledSide / 2; break;
+                    case 'top-right': x = 0; y = -scaledSide; textX = scaledSide / 2; textY = -scaledSide / 2; break;
+                    case 'bottom-left': x = -scaledSide; y = 0; textX = -scaledSide / 2; textY = scaledSide / 2; break;
+                    case 'bottom-right': x = 0; y = 0; textX = scaledSide / 2; textY = scaledSide / 2; break;
+                }
+
+                chartGroup.append("rect")
+                    .attr("x", x)
+                    .attr("y", y)
+                    .attr("width", scaledSide)
+                    .attr("height", scaledSide)
+                    .attr("fill", d.color);
+
+                if (scaledSide > 60) {
+                    chartGroup.append("text")
+                        .attr("class", "chart-label-title")
+                        .attr("x", textX)
+                        .attr("y", textY - 10)
+                        .text(d.name);
+                    chartGroup.append("text")
+                        .attr("class", "chart-label-score") // <-- FIX 3 HERE
+                        .attr("x", textX)
+                        .attr("y", textY + 16)
+                        .text(d.value);
+                }
+            });
+
+            // --- Draw the axes to divide colors ---
+            const axisColor = "#4b5563"; // gray-600
+            const axisWidth = 2;
+            
+            // Y-axis (vertical)
+            chartGroup.append("line")
+                .attr("x1", 0)
+                .attr("y1", -maxRadius)
+                .attr("x2", 0)
+                .attr("y2", maxRadius)
+                .attr("stroke", axisColor)
+                .attr("stroke-width", axisWidth);
+
+            // X-axis (horizontal)
+            chartGroup.append("line")
+                .attr("x1", -maxRadius)
+                .attr("y1", 0)
+                .attr("x2", maxRadius)
+                .attr("y2", 0)
+                .attr("stroke", axisColor)
+                .attr("stroke-width", axisWidth);
+            // --- END AXES ---
+
+            // --- Draw the average RECTANGLE LAST (so it's on top) ---
+            chartGroup.append("rect")
+                .attr("x", -averageScaledSide)
+                .attr("y", -averageScaledSide)
+                .attr("width", averageScaledSide * 2)
+                .attr("height", averageScaledSide * 2)
+                .attr("fill", "none")
+                .attr("stroke", "#6b7280") // gray-500
+                .attr("stroke-width", 2)
+                .attr("stroke-dasharray", "4 4"); // Make it dashed
+        }
+        // --- END FUNCTION ---
+
 
         // --- CHART 2: AREA (TRIANGLE) CHART ---
         function drawRadarChart(scores) {
@@ -751,7 +1113,7 @@
                 { name: "Yellow", value: scores.yellow, color: "#FACC15" }
             ].filter(d => d.value > 0);
 
-            if (data.length === 0) return;
+            if (data.length === 0) return; 
 
             const total = d3.sum(data, d => d.value);
 
@@ -799,10 +1161,12 @@
         function handleDragEnd(e) {
             // This is a cleanup function for drops that *don't* land in a valid dropzone
             // (e.g., dropped outside the window)
+            // --- FIX V3: Check if item is still being tracked ---
             if (draggedItem) {
                 draggedItem.classList.remove('dragging');
-                draggedItem = null;
             }
+            draggedItem = null; // Always clear on dragend
+            // --- END FIX V3 ---
             document.querySelectorAll('.highlight').forEach(el => el.classList.remove('highlight'));
         }
 
@@ -810,7 +1174,12 @@
             e.preventDefault();
             const dropzone = e.target.closest('.drop-spot, .word-bank-dropzone');
             if (dropzone) {
-                dropzone.classList.add('highlight');
+                // Prevent dropping a word in a full spot *that isn't the one it came from*
+                if (dropzone.classList.contains('drop-spot') && dropzone.children.length > 1 && draggedItem && draggedItem.parentElement !== dropzone) {
+                    // This is a full spot, don't highlight
+                } else {
+                    dropzone.classList.add('highlight');
+                }
             }
         }
 
@@ -824,12 +1193,12 @@
         function handleDrop(e) {
             e.preventDefault();
             
-            // --- FIX V2: Claim the item and prevent race condition ---
+            // --- FIX V4: Use a local variable and clear global immediately ---
             if (!draggedItem) return; // A drop event somehow fired without a dragged item
-
             const itemToDrop = draggedItem; // "Claim" the item
-            draggedItem = null; // Prevent handleDragEnd from cleaning up a "successful" drop
+            draggedItem = null; // Clear global immediately
             itemToDrop.classList.remove('dragging'); // Stop the dragging style
+            // --- END FIX V4 ---
 
             const dropzone = e.target.closest('.drop-spot, .word-bank-dropzone');
             if (!dropzone) return; // Didn't land in a valid spot
@@ -842,7 +1211,7 @@
                 // If spot is already full, move existing word back to bank
                 if (dropzone.children.length > 1) { // 2 children = labels + word
                     const existingWord = dropzone.querySelector('.draggable-word');
-                    if (existingWord) {
+                    if (existingWord && existingWord !== itemToDrop) { // Don't move item if dropping on self
                         card.querySelector('.word-bank-dropzone').appendChild(existingWord);
                     }
                 }
@@ -889,17 +1258,23 @@
             saveButton.addEventListener('click', () => {
                 checkFormCompletion(true); // Final check
                 if (!saveButton.disabled) {
-                    const scores = calculateScores();
+                    
+                    // NEW: Collect both scores and words
+                    const { scores, rankedWords } = collectRankedWords();
                     
                     testPage.classList.add('hidden');
                     resultsPage.classList.remove('hidden');
 
                     setTimeout(() => {
+                        // NEW: Populate the Key Words section
+                        populateWordAnalysis(scores, rankedWords); // <-- Pass scores in
+                        
+                        // Call all other charts
                         drawQuadrantChart(scores);
-                        // drawRadarChart(scores); // <-- REMOVED
+                        drawQuadrantChartNoAxis(scores); 
+                        drawQuadrantChartRectangle(scores); 
                         drawDonutChart(scores);
-                        drawPieChart(scores); // <-- ADDED
-                        // drawBubbleChart(scores); // <-- REMOVED
+                        drawPieChart(scores); 
                     }, 10); 
 
                     successMessage.textContent = 'Answers saved and results calculated!';
@@ -955,22 +1330,6 @@
                 currentQuestionIndex = totalQuestions - 1;
                 showQuestion(currentQuestionIndex);
             });
-
-            // --- Resize Listener ---
-            let resizeTimer;
-            window.addEventListener('resize', () => {
-                clearTimeout(resizeTimer);
-                resizeTimer = setTimeout(() => {
-                    if (!resultsPage.classList.contains('hidden')) {
-                        const scores = calculateScores(); 
-                        drawQuadrantChart(scores);
-                        // drawRadarChart(scores); // <-- REMOVED
-                        drawDonutChart(scores);
-                        drawPieChart(scores); // <-- ADDED
-                        // drawBubbleChart(scores); // <-- REMOVED
-                    }
-                }, 250);
-            });
         }
 
         // Start the app
@@ -978,10 +1337,6 @@
     </script>
 </body>
 </html>
-
-
-
-
 
 
 
