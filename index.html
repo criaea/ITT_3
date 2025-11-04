@@ -117,7 +117,7 @@
     <!-- Main Test Page Container --><main id="test-page" class="container bg-white rounded-xl shadow-2xl p-6 md:p-10 w-full max-w-4xl mx-auto">
         <h1 class="text-3xl md:text-4xl font-bold text-center mb-3 text-blue-700">Millennium Profile</h1>
         <p class="text-center text-gray-600 mb-8">
-            For each question, drag the words from the "Word Choices" into the slots on the left.
+            For each question, drag the words from the "Word Choices" into the slots on the right.
         </p>
 
         <!-- New Question Counter -->
@@ -184,9 +184,73 @@
                     </div>
                 </div>
 
+                <!-- Chart 4: Pie Chart -->
+                <div class="bg-gray-50 rounded-lg p-4 shadow-inner">
+                    <h2 class="text-xl font-bold text-center text-gray-800 mb-4">Pie Chart (Proportions)</h2>
+                    <div id="pie-chart-container" class="w-full h-[50vh] overflow-hidden">
+                        <svg id="pie-chart" class="w-full h-full"></svg>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- NEW: Interpretation Section -->
+            <div class="w-full mt-12">
+                <h2 class="text-3xl font-bold text-center text-gray-800 mb-6">Your Profile Analysis</h2>
+                <!-- This is now a single container with a 2x2 grid inside -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-px bg-gray-300 rounded-lg shadow-md overflow-hidden">
+                    
+                    <!-- BLUE (Upper Left) -->
+                    <div class="bg-blue-100 p-6"> <!-- Fixed typo classV and removed rounding/shadow -->
+                        <h3 class="text-2xl font-bold text-blue-800 mb-3">BLUE (Upper Left)</h3>
+                        <ul class="list-disc list-inside text-blue-900 space-y-1">
+                            <li>Wants to see data and statistics on performance.</li>
+                            <li>Looks at energy efficiency.</li>
+                            <li>Looks at cost of vehicle, trade in value.</li>
+                            <li>Comparison shopping with other vehicles.</li>
+                            <li>Ease of maintenance.</li>
+                            <li>Wants to know how it works.</li>
+                            <li>Likes power and precision handling.</li>
+                        </ul>
+                    </div>
+
+                    <!-- RED (Upper Right) -->
+                    <div class="bg-red-100 p-6"> <!-- Removed rounding/shadow -->
+                        <h3 class="text-2xl font-bold text-red-800 mb-3">RED (Upper Right)</h3>
+                        <ul class="list-disc list-inside text-red-900 space-y-1">
+                            <li>Looks at the aesthetic qualities: sportiness, colour, form. "Cutting Edge" qualities.</li>
+                            <li>Wants it to fit the dream, personal image, long range plans.</li>
+                            <li>More willing to experiment and take some risks.</li>
+                            <li>1st model buyer, early innovator.</li>
+                        </ul>
+                    </div>
+
+                    <!-- GREEN (Lower Left) -->
+                    <div class="bg-green-100 p-6"> <!-- Removed rounding/shadow -->
+                        <h3 class="text-2xl font-bold text-green-800 mb-3">GREEN (Lower Left)</h3>
+                        <ul class="list-disc list-inside text-green-900 space-y-1">
+                            <li>Interested in safety features, and durability.</li>
+                            <li>The practicality of size, number of doors, storage space, strain resistant materials, features such as interior trunk/gas lock.</li>
+                            <li>Looks at maintenance requirements.</li>
+                            <li>Have done research and know what they want.</li>
+                        </ul>
+                    </div>
+
+                    <!-- YELLOW (Lower Right) -->
+                    <div class="bg-yellow-100 p-6"> <!-- Removed rounding/shadow -->
+                        <h3 class="text-2xl font-bold text-yellow-800 mb-3">YELLOW (Lower Right)</h3>
+                        <ul class="list-disc list-inside text-yellow-900 space-y-1">
+                            <li>The 'Feel' and comfort of the vehicle is important, user friendliness of controls.</li>
+                            <li>Wants to 'Love' the car.</li>
+                            <li>Impacted by friendliness of sale and service organisation.</li>
+                            <li>Knows it's a right choice.</li>
+                            <li>Will buy based on a friends recommendations.</li>
+                        </ul>
+                    </div>
+                </div>
             </div>
             
-            <div class="text-center mt-8">
+            <div class="text-center mt-12"> <!-- Added more margin-top -->
                 <button id="back-to-test-button" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-8 rounded-lg shadow-lg transition-all duration-300">
                     Back to Test
                 </button>
@@ -220,7 +284,7 @@
             // Q1
             [
                 { word: "Gentle, Kindly", color: "green" },
-                { word: "Persuasive, convincing", color: "yellow" },
+                { word: "Persuasive, Convincing", color: "yellow" },
                 { word: "Humble, reserved", color: "blue" },
                 { word: "Original, inventive", color: "red" }
             ],
@@ -242,12 +306,12 @@
             [
                 { word: "Open-minded, receptive", color: "blue" },
                 { word: "Obliging, helpful", color: "green" },
-                { word: "Will-strong, strong willed", color: "red" },
+                { word: "Will power, strong willed", color: "red" },
                 { word: "Cheerful, joyful", color: "yellow" }
             ],
             // Q5
             [
-                { word: "Jovial, joking", color: "yellow" },
+                { word: "Jovial, jolting", color: "yellow" },
                 { word: "Precise, exact", color: "blue" },
                 { word: "Gutsy, brazen", color: "red" },
                 { word: "Even tempered, calm", color: "green" }
@@ -256,7 +320,7 @@
             [
                 { word: "Competitive, seeking to win", color: "red" },
                 { word: "Considerate, caring, thoughtful", color: "green" },
-                { word: "Out-going, fun loving", color: "yellow" },
+                { word: "Outgoing, fun loving", color: "yellow" },
                 { word: "Harmonious, agreeable", color: "blue" }
             ],
             // Q7
@@ -277,15 +341,15 @@
             [
                 { word: "Sociable", color: "yellow" },
                 { word: "Patient", color: "green" },
-                { word: "Self-reliant, independent", color: "red" },
+                { word: "Self reliant, independent", color: "red" },
                 { word: "Mild, reserved", color: "blue" }
             ],
             // Q10
             [
                 { word: "Adventurous", color: "red" },
-                { word: "Receptive, open to suggestions", color: "blue" },
+                { word: "Receptive, open to suggestions", color: "green" },
                 { word: "Warm, friendly", color: "yellow" },
-                { word: "Moderate", color: "green" }
+                { word: "Moderate", color: "blue" }
             ],
             // Q11
             [
@@ -303,9 +367,9 @@
             ],
             // Q13
             [
-                { word: "Aggressive, challenging", color: "red" },
+                { word: "Aggressive, challenger", color: "red" },
                 { word: "Outgoing, entertaining", color: "yellow" },
-                { word: "Life of party, ebullient", color: "green" },
+                { word: "Easy mark, easily taken advantage of", color: "green" },
                 { word: "Fearful, afraid", color: "blue" }
             ],
             // Q14
@@ -325,8 +389,8 @@
             // Q16
             [
                 { word: "Confident, assured", color: "yellow" },
-                { word: "Compassionate, compassionate", color: "blue" },
-                { word: "Tolerant", color: "green" },
+                { word: "Sympathetic, compassionate", color: "green" },
+                { word: "Tolerant", color: "blue" },
                 { word: "Assertive, aggressive", color: "red" }
             ],
             // Q17
@@ -336,7 +400,7 @@
                 { word: "Animated, uses gestures for expression", color: "yellow" },
                 { word: "Persistent, unrelenting", color: "red" }
             ],
-            // Q18 (Duplicate of Q8 text, but with new colors from your doc)
+            // Q18
             [
                 { word: "Brave, courageous", color: "red" },
                 { word: "Inspiring, motivating", color: "yellow" },
@@ -373,7 +437,7 @@
             ],
             // Q23
             [
-                { word: "Compassionate", color: "yellow" },
+                { word: "Companionable", color: "yellow" },
                 { word: "Accurate, correct", color: "blue" },
                 { word: "Outspoken, speaks freely", color: "red" },
                 { word: "Restrained, reserved, controlled", color: "green" }
@@ -413,10 +477,18 @@
 
             card.innerHTML = `
                 <h2 class="text-xl font-semibold text-gray-900 mb-2">Question ${index + 1}</h2>
-                <p class="text-gray-600 mb-4 text-sm">Drag the words from the "Word Choices" (right) into "Your Order" slots (left).</p>
+                <p class="text-gray-600 mb-4 text-sm">Drag the words from the "Word Choices" (left) into "Your Order" slots (right).</p>
                 <div class="flex flex-col md:flex-row gap-6">
                     
-                    <!-- Left Column: Rank Spots -->
+                    <!-- Left Column: Word Bank -->
+                    <div class="flex-1">
+                         <h3 class="font-semibold text-gray-700">Word Choices:</h3>
+                         <div class="word-bank-dropzone mt-2">
+                            ${wordBankWords}
+                         </div>
+                    </div>
+                    
+                    <!-- Right Column: Rank Spots -->
                     <div class="flex-1 space-y-3">
                         <h3 class="font-semibold text-gray-700">Your Order:</h3>
                         <div class="drop-spot" data-rank="1">
@@ -435,13 +507,6 @@
                         </div>
                     </div>
                     
-                    <!-- Right Column: Word Bank -->
-                    <div class="flex-1">
-                         <h3 class="font-semibold text-gray-700">Word Choices:</h3>
-                         <div class="word-bank-dropzone mt-2">
-                            ${wordBankWords}
-                         </div>
-                    </div>
                 </div>
                 <div class="error-message text-red-600 text-sm font-medium mt-3 h-5"></div>
             `;
@@ -662,9 +727,61 @@
                 });
         }
 
-        // --- CHART 4: BUBBLE CHART ---
-        function drawBubbleChart(scores) {
-            // This function is no longer called
+        // --- CHART 4: PIE CHART ---
+        function drawPieChart(scores) {
+            const container = document.getElementById('pie-chart-container');
+            if (!container) return;
+            const width = container.clientWidth;
+            const height = container.clientHeight;
+            const radius = Math.min(width, height) / 2 * 0.9;
+            const innerRadius = 0; // The only difference from Donut Chart
+
+            const svg = d3.select("#pie-chart")
+                .attr("viewBox", `0 0 ${width} ${height}`)
+                .attr("preserveAspectRatio", "xMidYMid meet");
+            svg.html("");
+
+            const chartGroup = svg.append("g")
+                .attr("transform", `translate(${width / 2}, ${height / 2})`);
+
+            const data = [
+                { name: "Blue", value: scores.blue, color: "#3B82F6" },
+                { name: "Red", value: scores.red, color: "#EF4444" },
+                { name: "Green", value: scores.green, color: "#22C55E" },
+                { name: "Yellow", value: scores.yellow, color: "#FACC15" }
+            ].filter(d => d.value > 0);
+
+            if (data.length === 0) return;
+
+            const total = d3.sum(data, d => d.value);
+
+            const pie = d3.pie().value(d => d.value).sort(null);
+            const arc = d3.arc().innerRadius(innerRadius).outerRadius(radius);
+
+            const arcs = chartGroup.selectAll(".arc")
+                .data(pie(data))
+                .enter().append("g")
+                .attr("class", "arc");
+
+            arcs.append("path")
+                .attr("d", arc)
+                .attr("fill", d => d.data.color)
+                .attr("stroke", "white")
+                .style("stroke-width", "2px");
+
+            arcs.append("text")
+                .attr("transform", d => `translate(${arc.centroid(d)})`)
+                .attr("dy", "0.35em")
+                .attr("fill", "white")
+                .attr("text-anchor", "middle")
+                .style("font-size", "1.1rem")
+                .style("font-weight", "600")
+                .style("text-shadow", "0 0 3px rgba(0,0,0,0.7)")
+                .text(d => {
+                    if (total === 0) return "0%";
+                    const percent = (d.data.value / total) * 100;
+                    return `${percent.toFixed(0)}%`;
+                });
         }
 
         // --- DRAG AND DROP HANDLERS ---
@@ -781,6 +898,7 @@
                         drawQuadrantChart(scores);
                         // drawRadarChart(scores); // <-- REMOVED
                         drawDonutChart(scores);
+                        drawPieChart(scores); // <-- ADDED
                         // drawBubbleChart(scores); // <-- REMOVED
                     }, 10); 
 
@@ -848,6 +966,7 @@
                         drawQuadrantChart(scores);
                         // drawRadarChart(scores); // <-- REMOVED
                         drawDonutChart(scores);
+                        drawPieChart(scores); // <-- ADDED
                         // drawBubbleChart(scores); // <-- REMOVED
                     }
                 }, 250);
@@ -859,6 +978,11 @@
     </script>
 </body>
 </html>
+
+
+
+
+
 
 
 
