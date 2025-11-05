@@ -172,85 +172,48 @@
 
     <!-- Results Page Container (hidden by default) 
     --><div id="results-page" class="hidden fixed inset-0 bg-gray-100 p-4 overflow-y-auto">
-        <div class="container bg-white rounded-xl shadow-2xl p-6 md:p-10 w-full max-w-5xl mx-auto flex flex-col items-center my-auto">
+        <div class="container bg-white rounded-xl shadow-2xl p-6 md:p-10 w-full max-w-7xl mx-auto flex flex-col items-center my-auto"> <!-- CHANGED: max-w-5xl to max-w-7xl -->
             <h1 class="text-3xl md:text-4xl font-bold text-center mb-6 text-blue-700">Your Profile Results</h1>
             
-            <!-- NEW: Grid container for multiple charts -->
+            <!-- Grid container for multiple charts -->
             <div class="grid grid-cols-1 md:grid-cols-1 gap-8 w-full">
 
-                <!-- REMOVED: Chart 0: Word Map Chart -->
-                
-                <!-- NEW: Key Words Section -->
-                <div class="w-full">
-                    <h2 class="text-3xl font-bold text-center text-gray-800 mb-6">Your Key Words (Ranked #1 & #2)</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-px bg-gray-300 rounded-lg shadow-md overflow-hidden">
-                        
-                        <!-- BLUE (Upper Left) -->
-                        <div class="bg-blue-100 p-6">
-                            <h3 class="text-2xl font-bold text-blue-800 mb-3">BLUE</h3>
-                            <div id="blue-key-words"></div>
-                        </div>
-
-                        <!-- RED (Upper Right) -->
-                        <div class="bg-red-100 p-6">
-                            <h3 class="text-2xl font-bold text-red-800 mb-3">RED</h3>
-                            <div id="red-key-words"></div>
-                        </div>
-
-                        <!-- GREEN (Lower Left) -->
-                        <div class="bg-green-100 p-6">
-                            <h3 class="text-2xl font-bold text-green-800 mb-3">GREEN</h3>
-                            <div id="green-key-words"></div>
-                        </div>
-
-                        <!-- YELLOW (Lower Right) -->
-                        <div class="bg-yellow-100 p-6">
-                            <h3 class="text-2xl font-bold text-yellow-800 mb-3">YELLOW</h3>
-                            <div id="yellow-key-words"></div>
-                        </div>
-                    </div>
-                </div>
-                <!-- END NEW Section -->
-
-
-                <!-- Chart 1: Quadrant Chart (Circle Avg, with Axes) -->
-                <div class="bg-gray-50 rounded-lg p-4 shadow-inner">
-                    <h2 class="text-xl font-bold text-center text-gray-800 mb-4">Quadrant Chart (With Axes)</h2>
-                    <div id="quadrant-chart-container" class="w-full h-[60vh] overflow-hidden">
-                        <svg id="quadrant-chart" class="w-full h-full"></svg>
-                    </div>
-                </div>
-
-                <!-- NEW: Chart 1.B: Quadrant Chart (Circle Avg, No Axes) -->
-                <div class="bg-gray-50 rounded-lg p-4 shadow-inner">
-                    <h2 class="text-xl font-bold text-center text-gray-800 mb-4">Quadrant Chart (No Axes)</h2>
-                    <div id="quadrant-chart-noaxis-container" class="w-full h-[60vh] overflow-hidden">
-                        <svg id="quadrant-chart-noaxis" class="w-full h-full"></svg>
-                    </div>
-                </div>
-
-                <!-- Chart 1.5: Quadrant Chart (Rectangle Avg) -->
-                <div class="bg-gray-50 rounded-lg p-4 shadow-inner">
+                <!-- 1. Chart 1.5: Quadrant Chart (Rectangle Avg) - FIRST CHART -->
+                <div class="w-full"> 
                     <h2 class="text-xl font-bold text-center text-gray-800 mb-4">Quadrant Chart (Rectangle Average)</h2>
-                    <div id="quadrant-chart-rect-container" class="w-full h-[60vh] overflow-hidden">
+                    <div id="quadrant-chart-rect-container" class="w-full h-[70vh] overflow-hidden"> 
                         <svg id="quadrant-chart-rect" class="w-full h-full"></svg>
                     </div>
-                </div>
-
-                <!-- Chart 3: Donut Chart -->
-                <div class="bg-gray-50 rounded-lg p-4 shadow-inner">
-                    <h2 class="text-xl font-bold text-center text-gray-800 mb-4">Donut Chart (Proportions)</h2>
-                    <div id="donut-chart-container" class="w-full h-[50vh] overflow-hidden">
-                        <svg id="donut-chart" class="w-full h-full"></svg>
+                    <!-- ARROW KEY/LEGEND ADDED HERE -->
+                    <div class="mt-4 flex flex-col items-center space-y-2 text-lg font-semibold">
+                        <p class="text-gray-700">Adjustment Visual (Appears if score is more than 24 points from the 120 average):</p>
+                        <div class="flex justify-center space-x-6">
+                            <div class="flex items-center space-x-2 text-blue-700">
+                                <span class="font-bold">Line towards center:</span> Score **> 144** (Must shrink to reach 120).
+                            </div>
+                            <div class="flex items-center space-x-2 text-green-700">
+                                <span class="font-bold">Line away from center:</span> Score **< 96** (Must grow to reach 120).
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Chart 4: Pie Chart -->
-                <div class="bg-gray-50 rounded-lg p-4 shadow-inner">
+                
+                <!-- 2. Chart 4: Pie Chart (Proportions) - SECOND CHART (MOVED UP) -->
+                <div class="w-full"> 
                     <h2 class="text-xl font-bold text-center text-gray-800 mb-4">Pie Chart (Proportions)</h2>
-                    <div id="pie-chart-container" class="w-full h-[50vh] overflow-hidden">
+                    <div id="pie-chart-container" class="w-full h-[60vh] overflow-hidden"> 
                         <svg id="pie-chart" class="w-full h-full"></svg>
                     </div>
+                </div>
+
+                <!-- 3. Chart 1.6: Quadrant Chart (Words) - THIRD CHART (MOVED DOWN) -->
+                <div class="w-full">
+                    <h2 class="text-xl font-bold text-center text-gray-800 mb-4">Quadrant Chart (Key Words)</h2>
+                    <div id="quadrant-chart-words-container" class="w-full h-[95vh] overflow-hidden"> 
+                        <svg id="quadrant-chart-words" class="w-full h-full"></svg>
+                    </div>
+                    <!-- ARROW KEY/LEGEND REMOVED FROM HERE -->
                 </div>
 
             </div>
@@ -302,7 +265,7 @@
                         <h3 class="text-2xl font-bold text-yellow-800 mb-3">YELLOW (Lower Right)</h3>
                         <ul class="list-disc list-inside text-yellow-900 space-y-1">
                             <li>The 'Feel' and comfort of the vehicle is important, user friendliness of controls.</li>
-                            <li>Wants to 'Love' the car.</li>
+                            <li>WWants to 'Love' the car.</li>
                             <li>Impacted by friendliness of sale and service organisation.</li>
                             <li>Knows it's a right choice.</li>
                             <li>Will buy based on a friends recommendations.</li>
@@ -430,7 +393,7 @@
             [
                 { word: "Aggressive, challenger", color: "red" },
                 { word: "Outgoing, entertaining", color: "yellow" },
-                { word: "Easy mark, easily taken advantage of", color: "green" },
+                { word: "Easily taken advantage of", color: "green" },
                 { word: "Fearful, afraid", color: "blue" }
             ],
             // Q14
@@ -696,24 +659,53 @@
         // --- NEW: Function to populate Key Words ---
         function populateWordAnalysis(scores, rankedWords) { // <-- Now receives scores
             const colors = ['blue', 'red', 'green', 'yellow'];
+            let capacities = {};
+            let wordsToDisplay = {};
+
+            // 1. Calculate capacity and get words for all colors FIRST
+            colors.forEach(color => {
+                const wordCapacity = Math.floor(scores[color] / 20);
+                capacities[color] = wordCapacity;
+                wordsToDisplay[color] = rankedWords[color].slice(0, wordCapacity);
+            });
+
+            // 2. Calculate grid proportions
+            const totalWords = capacities.blue + capacities.red + capacities.green + capacities.yellow;
+
+            let topRowFr, bottomRowFr, leftColFr, rightColFr;
+
+            if (totalWords === 0) {
+                // Default to equal grid if no words
+                topRowFr = 1; bottomRowFr = 1; leftColFr = 1; rightColFr = 1;
+            } else {
+                const topRowWords = capacities.blue + capacities.red;
+                const bottomRowWords = capacities.green + capacities.yellow;
+                const leftColWords = capacities.blue + capacities.green;
+                const rightColWords = capacities.red + capacities.yellow;
+
+                // Use 1 as a minimum to prevent 0fr
+                topRowFr = topRowWords || 1;
+                bottomRowFr = bottomRowWords || 1;
+                leftColFr = leftColWords || 1;
+                rightColFr = rightColWords || 1;
+            }
+
+            // 3. Apply proportions to the grid container
+            const gridContainer = document.getElementById('key-words-grid');
+            if (gridContainer) {
+                gridContainer.style.gridTemplateRows = `${topRowFr}fr ${bottomRowFr}fr`;
+                gridContainer.style.gridTemplateColumns = `${leftColFr}fr ${rightColFr}fr`;
+            }
+
+            // 4. Now, populate the HTML for each box
             colors.forEach(color => {
                 const container = document.getElementById(`${color}-key-words`);
                 if (!container) return;
 
-                // 1. Calculate word capacity based on 20 points per word
-                const wordCapacity = Math.floor(scores[color] / 20); // <-- UPDATED RULE
+                const currentWords = wordsToDisplay[color]; // This is an array
 
-                // 2. Get all ranked words (they are already sorted by rank from collectRankedWords)
-                const allRankedWords = rankedWords[color];
-
-                // 3. Fill the list based on capacity
-                // This automatically takes #1s, then #2s, then #3s, etc., up to the limit
-                let wordsToDisplay = allRankedWords.slice(0, wordCapacity);
-
-
-                if (wordsToDisplay.length === 0) {
+                if (currentWords.length === 0) {
                      if (scores[color] > 0) {
-                         // This handles cases where score is > 0 but < 20
                         container.innerHTML = `<p class="text-sm italic text-gray-600">No words to display at this point level.</p>`;
                     } else {
                         container.innerHTML = `<p class="text-sm italic text-gray-600">No score for this color.</p>`;
@@ -722,7 +714,8 @@
                 }
 
                 // 5. Create the simple bulleted list
-                const listHtml = wordsToDisplay.map(word => {
+                // --- FIX: Change wordsToDisplay.map to currentWords.map ---
+                const listHtml = currentWords.map(word => {
                     // Add a style based on rank
                     return `<li class="key-word-rank-${word.rank}">${word.text}</li>`;
                 }).join('');
@@ -733,196 +726,11 @@
         // --- END NEW FUNCTION ---
 
 
-        // --- CHART 1: QUADRANT CHART ---
-        function drawQuadrantChart(scores) {
-            const chartContainer = document.getElementById('quadrant-chart-container');
-            if (!chartContainer) return;
-            const width = chartContainer.clientWidth;
-            const height = chartContainer.clientHeight;
-            
-            const svg = d3.select("#quadrant-chart")
-                .attr("viewBox", `0 0 ${width} ${height}`)
-                .attr("preserveAspectRatio", "xMidYMid meet");
-            svg.html("");
-
-            const centerX = width / 2;
-            const centerY = height / 2;
-
-            const data = [
-                { name: "Blue", value: scores.blue, color: "#3B82F6", quadrant: 'top-left' },
-                { name: "Red", value: scores.red, color: "#EF4444", quadrant: 'top-right' },
-                { name: "Green", value: scores.green, color: "#22C55E", quadrant: 'bottom-left' },
-                { name: "Yellow", value: scores.yellow, color: "#FACC15", quadrant: 'bottom-right' } // <-- CHANGED COLOR
-            ];
-
-            // --- NEW LOGIC: Scale based on MAX possible score (240) ---
-            const maxPossibleScore = 240;
-            const maxPossibleSide = Math.sqrt(maxPossibleScore);
-            const maxRadius = Math.min(width / 2, height / 2) * 0.95; // 95% of container
-            const scale = maxRadius / maxPossibleSide; // This is our pixels-per-sqrt(point)
-
-            // --- NEW LOGIC: Calculate Average Circle ---
-            const averageScore = 120;
-            const averageSide = Math.sqrt(averageScore);
-            const averageRadius = averageSide * scale;
-            // --- END NEW LOGIC ---
-
-            const chartGroup = svg.append("g")
-                .attr("transform", `translate(${centerX}, ${centerY})`);
-
-            // --- Draw the squares FIRST ---
-            data.forEach(d => {
-                // Calculate side length based on actual value
-                d.side = Math.sqrt(d.value);
-                const scaledSide = d.side * scale; // Use the new fixed scale
-
-                let x, y, textX, textY;
-                switch (d.quadrant) {
-                    case 'top-left': x = -scaledSide; y = -scaledSide; textX = -scaledSide / 2; textY = -scaledSide / 2; break;
-                    case 'top-right': x = 0; y = -scaledSide; textX = scaledSide / 2; textY = -scaledSide / 2; break;
-                    case 'bottom-left': x = -scaledSide; y = 0; textX = -scaledSide / 2; textY = scaledSide / 2; break;
-                    case 'bottom-right': x = 0; y = 0; textX = scaledSide / 2; textY = scaledSide / 2; break;
-                }
-
-                chartGroup.append("rect")
-                    .attr("x", x)
-                    .attr("y", y)
-                    .attr("width", scaledSide)
-                    .attr("height", scaledSide)
-                    .attr("fill", d.color);
-
-                if (scaledSide > 60) {
-                    chartGroup.append("text")
-                        .attr("class", "chart-label-title")
-                        .attr("x", textX)
-                        .attr("y", textY - 10)
-                        .text(d.name);
-                    chartGroup.append("text")
-                        .attr("class", "chart-label-score")
-                        .attr("x", textX)
-                        .attr("y", textY + 16)
-                        .text(d.value);
-                }
-            });
-
-            // --- NEW: Draw the axes to divide colors ---
-            const axisColor = "#4b5563"; // gray-600
-            const axisWidth = 2;
-            
-            // Y-axis (vertical)
-            chartGroup.append("line")
-                .attr("x1", 0)
-                .attr("y1", -maxRadius)
-                .attr("x2", 0)
-                .attr("y2", maxRadius)
-                .attr("stroke", axisColor)
-                .attr("stroke-width", axisWidth);
-
-            // X-axis (horizontal)
-            chartGroup.append("line")
-                .attr("x1", -maxRadius)
-                .attr("y1", 0)
-                .attr("x2", maxRadius)
-                .attr("y2", 0)
-                .attr("stroke", axisColor)
-                .attr("stroke-width", axisWidth);
-            // --- END NEW ---
-
-            // --- Draw the average circle LAST (so it's on top) ---
-            chartGroup.append("circle")
-                .attr("cx", 0)
-                .attr("cy", 0)
-                .attr("r", averageRadius)
-                .attr("fill", "none")
-                .attr("stroke", "#6b7280") // gray-500
-                .attr("stroke-width", 2)
-                .attr("stroke-dasharray", "4 4"); // Make it dashed
-        }
-
-        // --- NEW: CHART 1.B: QUADRANT CHART (NO AXES) ---
-        function drawQuadrantChartNoAxis(scores) {
-            const chartContainer = document.getElementById('quadrant-chart-noaxis-container');
-            if (!chartContainer) return;
-            const width = chartContainer.clientWidth;
-            const height = chartContainer.clientHeight;
-            
-            const svg = d3.select("#quadrant-chart-noaxis")
-                .attr("viewBox", `0 0 ${width} ${height}`)
-                .attr("preserveAspectRatio", "xMidYMid meet");
-            svg.html("");
-
-            const centerX = width / 2;
-            const centerY = height / 2;
-
-            const data = [
-                { name: "Blue", value: scores.blue, color: "#3B82F6", quadrant: 'top-left' },
-                { name: "Red", value: scores.red, color: "#EF4444", quadrant: 'top-right' },
-                { name: "Green", value: scores.green, color: "#22C55E", quadrant: 'bottom-left' },
-                { name: "Yellow", value: scores.yellow, color: "#FACC15", quadrant: 'bottom-right' }
-            ];
-
-            const maxPossibleScore = 240;
-            const maxPossibleSide = Math.sqrt(maxPossibleScore);
-            const maxRadius = Math.min(width / 2, height / 2) * 0.95; 
-            const scale = maxRadius / maxPossibleSide; 
-
-            const averageScore = 120;
-            const averageSide = Math.sqrt(averageScore);
-            const averageRadius = averageSide * scale;
-
-            const chartGroup = svg.append("g")
-                .attr("transform", `translate(${centerX}, ${centerY})`);
-
-            // --- Draw the squares FIRST ---
-            data.forEach(d => {
-                d.side = Math.sqrt(d.value);
-                const scaledSide = d.side * scale; 
-
-                let x, y, textX, textY;
-                switch (d.quadrant) {
-                    case 'top-left': x = -scaledSide; y = -scaledSide; textX = -scaledSide / 2; textY = -scaledSide / 2; break;
-                    case 'top-right': x = 0; y = -scaledSide; textX = scaledSide / 2; textY = -scaledSide / 2; break;
-                    case 'bottom-left': x = -scaledSide; y = 0; textX = -scaledSide / 2; textY = scaledSide / 2; break;
-                    case 'bottom-right': x = 0; y = 0; textX = scaledSide / 2; textY = scaledSide / 2; break;
-                }
-
-                chartGroup.append("rect")
-                    .attr("x", x)
-                    .attr("y", y)
-                    .attr("width", scaledSide)
-                    .attr("height", scaledSide)
-                    .attr("fill", d.color);
-
-                if (scaledSide > 60) {
-                    chartGroup.append("text")
-                        .attr("class", "chart-label-title")
-                        .attr("x", textX)
-                        .attr("y", textY - 10)
-                        .text(d.name);
-                    chartGroup.append("text")
-                        .attr("class", "chart-label-score")
-                        .attr("x", textX)
-                        .attr("y", textY + 16)
-                        .text(d.value);
-                }
-            });
-
-            // --- AXES ARE REMOVED IN THIS VERSION ---
-
-            // --- Draw the average circle LAST (so it's on top) ---
-            chartGroup.append("circle")
-                .attr("cx", 0)
-                .attr("cy", 0)
-                .attr("r", averageRadius)
-                .attr("fill", "none")
-                .attr("stroke", "#6b7280") // gray-500
-                .attr("stroke-width", 2)
-                .attr("stroke-dasharray", "4 4"); // Make it dashed
-        }
-        // --- END NEW FUNCTION ---
+        <!-- CHART 1: QUADRANT CHART (REMOVED) -->
+        <!-- CHART 1.B: QUADRANT CHART (NO AXES) (REMOVED) -->
 
 
-        // --- CHART 1.5: QUADRANT CHART (RECTANGLE) ---
+        <!-- CHART 1.5: Quadrant Chart (Rectangle Avg) -->
         function drawQuadrantChartRectangle(scores) {
             const chartContainer = document.getElementById('quadrant-chart-rect-container');
             if (!chartContainer) return;
@@ -932,7 +740,7 @@
             const svg = d3.select("#quadrant-chart-rect")
                 .attr("viewBox", `0 0 ${width} ${height}`)
                 .attr("preserveAspectRatio", "xMidYMid meet");
-            svg.html("");
+            svg.html(""); // Clear existing content
 
             const centerX = width / 2;
             const centerY = height / 2;
@@ -943,23 +751,53 @@
                 { name: "Green", value: scores.green, color: "#22C55E", quadrant: 'bottom-left' },
                 { name: "Yellow", value: scores.yellow, color: "#FACC15", quadrant: 'bottom-right' }
             ];
+            
+            // Map color name to hex value for dynamic use
+            const colorMap = {
+                'Blue': '#3B82F6',
+                'Red': '#EF4444',
+                'Green': '#22C55E',
+                'Yellow': '#FACC15'
+            };
 
-            const maxPossibleScore = 240;
+            // --- CHANGE: 1.5x area scaling (Max side length = sqrt(240/1.5) = sqrt(160)) ---
+            const maxPossibleScore = 160; 
             const maxPossibleSide = Math.sqrt(maxPossibleScore);
-            const maxRadius = Math.min(width / 2, height / 2) * 0.95; 
+            const maxRadius = Math.min(width / 2, height / 2) * 1.0; 
             const scale = maxRadius / maxPossibleSide; 
 
             const averageScore = 120;
             const averageSide = Math.sqrt(averageScore);
             const averageScaledSide = averageSide * scale; // This is the 'radius' for the rect
-
+            
             const chartGroup = svg.append("g")
                 .attr("transform", `translate(${centerX}, ${centerY})`);
+            
+            // --- UPDATED ARROWHEAD DEFINITION (Smaller and Black Color) ---
+            const ARROW_PATH = "M0,0 L10,5 L0,10 Z";
+            const MARKER_SIZE = 4; // Much smaller arrow size (was 8)
+            const ARROW_COLOR = "#000000"; // Black color
 
+            // Define the shared marker path. We use a single definition and set fill/stroke to black.
+            svg.append("defs").append("marker")
+                .attr("id", "arrowhead")
+                .attr("viewBox", "0 0 10 10")
+                .attr("refX", 10) 
+                .attr("refY", 5) 
+                .attr("markerWidth", MARKER_SIZE)
+                .attr("markerHeight", MARKER_SIZE)
+                .attr("orient", "auto-start-reverse") 
+                .append("path")
+                .attr("d", ARROW_PATH)
+                .attr("fill", ARROW_COLOR) 
+                .attr("stroke", ARROW_COLOR) 
+                .attr("stroke-width", 0.5); 
+            
             // --- Draw the squares FIRST ---
             data.forEach(d => {
                 d.side = Math.sqrt(d.value);
                 const scaledSide = d.side * scale; 
+                const colorHex = colorMap[d.name];
 
                 let x, y, textX, textY;
                 switch (d.quadrant) {
@@ -983,11 +821,51 @@
                         .attr("y", textY - 10)
                         .text(d.name);
                     chartGroup.append("text")
-                        .attr("class", "chart-label-score") // <-- FIX 3 HERE
+                        .attr("class", "chart-label-score") 
                         .attr("x", textX)
                         .attr("y", textY + 16)
                         .text(d.value);
                 }
+
+                // --- DYNAMIC ARROW LOGIC (Connection from Score Box to Average Box) ---
+                const THRESHOLD = 24; // Points difference threshold
+                
+                if (Math.abs(d.value - averageScore) > THRESHOLD) { 
+                    let Sx, Sy; // Start point (Corner of the Score Box)
+                    let Ex, Ey; // End point (Corner of the Average Box)
+                    
+                    // 1. Define Corner Points 
+                    switch (d.quadrant) {
+                        case 'top-left': // Blue Quadrant
+                            Sx = -scaledSide; Sy = -scaledSide;
+                            Ex = -averageScaledSide; Ey = -averageScaledSide;
+                            break;
+                        case 'top-right': // Red Quadrant
+                            Sx = scaledSide; Sy = -scaledSide;
+                            Ex = averageScaledSide; Ey = -averageScaledSide;
+                            break;
+                        case 'bottom-left': // Green Quadrant
+                            Sx = -scaledSide; Sy = scaledSide;
+                            Ex = -averageScaledSide; Ey = averageScaledSide;
+                            break;
+                        case 'bottom-right': // Yellow Quadrant
+                            Sx = scaledSide; Sy = scaledSide;
+                            Ex = averageScaledSide; Ey = averageScaledSide;
+                            break;
+                    }
+
+                    // 2. Draw the line connecting the score box corner to the average box corner
+                    chartGroup.append("line")
+                        .attr("x1", Sx)
+                        .attr("y1", Sy)
+                        .attr("x2", Ex)
+                        .attr("y2", Ey)
+                        .attr("stroke", ARROW_COLOR) // Use black color
+                        .attr("stroke-width", 2) // Slightly thicker line
+                        .attr("marker-end", "url(#arrowhead)") 
+                        .attr("style", `color: ${ARROW_COLOR};`); // Set currentColor context for the marker
+                }
+                // --- END DYNAMIC ARROW LOGIC ---
             });
 
             // --- Draw the axes to divide colors ---
@@ -1026,70 +904,203 @@
         }
         // --- END FUNCTION ---
 
-
-        // --- CHART 2: AREA (TRIANGLE) CHART ---
-        function drawRadarChart(scores) {
-            // This function is no longer called
-        }
-        
-        // --- CHART 3: DONUT CHART ---
-        function drawDonutChart(scores) {
-            const container = document.getElementById('donut-chart-container');
-            if (!container) return;
-            const width = container.clientWidth;
-            const height = container.clientHeight;
-            const radius = Math.min(width, height) / 2 * 0.9;
-            const innerRadius = radius * 0.6;
-
-            const svg = d3.select("#donut-chart")
+        <!-- NEW: Chart 1.6: Quadrant Chart (Words) ---
+        function drawQuadrantChartWords(scores, rankedWords) {
+            const chartContainer = document.getElementById('quadrant-chart-words-container'); // New container
+            if (!chartContainer) return;
+            const width = chartContainer.clientWidth;
+            const height = chartContainer.clientHeight;
+            
+            const svg = d3.select("#quadrant-chart-words") // New SVG ID
                 .attr("viewBox", `0 0 ${width} ${height}`)
                 .attr("preserveAspectRatio", "xMidYMid meet");
             svg.html("");
 
-            const chartGroup = svg.append("g")
-                .attr("transform", `translate(${width / 2}, ${height / 2})`);
-
+            const centerX = width / 2;
+            const centerY = height / 2;
+            
+            // --- UPDATED COLORS for better contrast/design ---
             const data = [
-                { name: "Blue", value: scores.blue, color: "#3B82F6" },
-                { name: "Red", value: scores.red, color: "#EF4444" },
-                { name: "Green", value: scores.green, color: "#22C55E" },
-                { name: "Yellow", value: scores.yellow, color: "#FACC15" } // <-- CHANGED COLOR
-            ].filter(d => d.value > 0);
+                { name: "Blue", value: scores.blue, color: "#C6DAF8", quadrant: 'top-left' }, // Light Blue
+                { name: "Red", value: scores.red, color: "#FDDCDC", quadrant: 'top-right' }, // Light Red/Rose
+                { name: "Green", value: scores.green, color: "#C3E6CB", quadrant: 'bottom-left' }, // Light Green
+                { name: "Yellow", value: scores.yellow, color: "#FEEFC3", quadrant: 'bottom-right' } // Light Yellow/Gold
+            ];
 
-            if (data.length === 0) return;
+            <!-- Max score set to 120 for 2x area scaling -->
+            const maxPossibleScore = 120; 
+            const maxPossibleSide = Math.sqrt(maxPossibleScore);
+            const maxRadius = Math.min(width / 2, height / 2) * 1.0; 
+            const scale = maxRadius / maxPossibleSide; // <-- ADDED THIS LINE TO FIX ERROR
 
-            const total = d3.sum(data, d => d.value);
+            const averageScore = 120;
+            const averageSide = Math.sqrt(averageScore);
+            const averageScaledSide = averageSide * scale;
+            
+            const ARROW_SIZE = 15;
+            // Path for a standard UP arrow
+            const pathUp = `M 0,${-ARROW_SIZE / 2} L ${ARROW_SIZE / 2},${ARROW_SIZE / 2} L ${-ARROW_SIZE / 2},${ARROW_SIZE / 2} Z`;
+            // Path for a standard DOWN arrow (inverted Y coordinates)
+            const pathDown = `M 0,${ARROW_SIZE / 2} L ${ARROW_SIZE / 2},${-ARROW_SIZE / 2} L ${-ARROW_SIZE / 2},${-ARROW_SIZE / 2} Z`;
 
-            const pie = d3.pie().value(d => d.value).sort(null);
-            const arc = d3.arc().innerRadius(innerRadius).outerRadius(radius);
 
-            const arcs = chartGroup.selectAll(".arc")
-                .data(pie(data))
-                .enter().append("g")
-                .attr("class", "arc");
+            const chartGroup = svg.append("g")
+                .attr("transform", `translate(${centerX}, ${centerY})`);
 
-            arcs.append("path")
-                .attr("d", arc)
-                .attr("fill", d => d.data.color)
-                .attr("stroke", "white")
-                .style("stroke-width", "2px");
+            // --- Draw the squares FIRST ---
+            data.forEach(d => {
+                d.side = Math.sqrt(d.value);
+                const scaledSide = d.side * scale; 
 
-            arcs.append("text")
-                .attr("transform", d => `translate(${arc.centroid(d)})`)
-                .attr("dy", "0.35em")
-                .attr("fill", "white")
-                .attr("text-anchor", "middle")
-                .style("font-size", "1.1rem")
-                .style("font-weight", "600")
-                .style("text-shadow", "0 0 3px rgba(0,0,0,0.7)")
-                .text(d => {
-                    if (total === 0) return "0%";
-                    const percent = (d.data.value / total) * 100;
-                    return `${percent.toFixed(0)}%`;
-                });
+                let x, y;
+                switch (d.quadrant) {
+                    case 'top-left': x = -scaledSide; y = -scaledSide; break;
+                    case 'top-right': x = 0; y = -scaledSide; break;
+                    case 'bottom-left': x = -scaledSide; y = 0; break;
+                    case 'bottom-right': x = 0; y = 0; break;
+                }
+
+                // Draw the colored rectangle
+                chartGroup.append("rect")
+                    .attr("x", x)
+                    .attr("y", y)
+                    .attr("width", scaledSide)
+                    .attr("height", scaledSide)
+                    .attr("fill", d.color);
+
+                // --- NEW TEXT LOGIC ---
+                const colorName = d.name.toLowerCase();
+                const wordCapacity = Math.floor(d.value / 20);
+                // Get the words for this color, up to its capacity
+                const wordsToShow = rankedWords[colorName].slice(0, wordCapacity);
+
+                if (wordsToShow.length > 0) {
+                    
+                    // --- NEW: Font and Layout Logic ---
+                    let fontFamily = 'sans-serif';
+                    let fontWeight = 'normal';
+                    let fontSize = '0.85rem'; // Base smaller font for fit
+
+                    switch (colorName) {
+                        case 'blue':
+                            fontFamily = 'sans-serif';
+                            fontWeight = '300'; // Thin font
+                            break;
+                        case 'red':
+                            fontFamily = 'sans-serif';
+                            fontWeight = '900'; // Bold font
+                            break;
+                        case 'green':
+                            fontFamily = "'Times New Roman', Times, serif"; // Serif font
+                            fontWeight = 'normal'; // Will vary by rank
+                            break;
+                        case 'yellow':
+                            fontFamily = "'Cursive', cursive"; // Calligraphy/Script font
+                            fontWeight = 'normal'; // Will vary by rank
+                            fontSize = '1rem'; // Slightly larger for script
+                            break;
+                    }
+
+                    // Build the HTML content for the words as "tags"
+                    const wordsHtml = wordsToShow.map(word => {
+                        
+                        let finalWeight = fontWeight;
+                        // For Green/Yellow, vary weight by rank. Blue/Red are fixed.
+                        if (colorName === 'green' || colorName === 'yellow') {
+                            if (word.rank == 1) finalWeight = '700';
+                            else if (word.rank == 2) finalWeight = '500';
+                            else if (word.rank == 3) finalWeight = '400';
+                            else finalWeight = '300';
+                        }
+                        
+                        // Use opacity for all to show rank (stronger differentiation)
+                        let opacity = '1.0';
+                        if (word.rank == 2) opacity = '0.7'; // More pronounced opacity reduction
+                        else if (word.rank == 3) opacity = '0.5';
+                        else if (word.rank == 4) opacity = '0.3';
+
+                        // --- CHANGED: display: block for one word per row. Increased line-height for spacing. ---
+                        const wordTagStyle = `
+                            font-family: ${fontFamily}; 
+                            font-weight: ${finalWeight}; 
+                            font-size: ${fontSize};
+                            opacity: ${opacity};
+                            color: #1f2937; /* Very dark text for max contrast */
+                            display: block; 
+                            text-align: center;
+                            line-height: 1.4; /* Increased line height for vertical spacing */
+                        `;
+
+                        return `<span style="${wordTagStyle.replace(/\s+/g, ' ')}">${word.text}</span>`;
+                    }).join('');
+
+                    // --- Layout Improvement: Changed to flex-direction: column and removed flex-wrap/gap ---
+                    const htmlContent = `
+                        <div xmlns="http://www.w3.org/1999/xhtml" 
+                             style="width: ${scaledSide}px; height: ${scaledSide}px; 
+                                    font-family: sans-serif; 
+                                    overflow-y: hidden; 
+                                    padding: 10px 5px; /* Increased top/bottom padding slightly */
+                                    box-sizing: border-box;
+                                    display: flex; flex-direction: column; /* Stack words vertically */
+                                    align-items: center; /* Center horizontally */
+                                    justify-content: center; /* Center vertically (as a group) */
+                                    text-align: center;">
+                            ${wordsHtml}
+                        </div>
+                    `;
+                    // --- END NEW LOGIC ---
+
+
+                    // Append the foreignObject
+                    chartGroup.append("foreignObject")
+                        .attr("x", x) // Position it at the same spot as the rect
+                        .attr("y", y)
+                        .attr("width", scaledSide) // Give it the same size
+                        .attr("height", scaledSide)
+                        .html(htmlContent);
+                        
+                }
+                
+            });
+
+            // --- CHANGED: REMOVED the axes ---
+            /*
+            const axisColor = "#4b5563"; 
+            const axisWidth = 2;
+            
+            chartGroup.append("line")
+                .attr("x1", 0).attr("y1", -maxRadius)
+                .attr("x2", 0).attr("y2", maxRadius)
+                .attr("stroke", axisColor).attr("stroke-width", axisWidth);
+
+            chartGroup.append("line")
+                .attr("x1", -maxRadius).attr("y1", 0)
+                .attr("x2", maxRadius).attr("y2", 0)
+                .attr("stroke", axisColor).attr("stroke-width", axisWidth);
+            */
+
+            // --- CHANGED: REMOVED the average RECTANGLE ---
+            /*
+            chartGroup.append("rect")
+                .attr("x", -averageScaledSide)
+                .attr("y", -averageScaledSide)
+                .attr("width", averageScaledSide * 2)
+                .attr("height", averageScaledSide * 2)
+                .attr("fill", "none")
+                .attr("stroke", "#6b7280")
+                .attr("stroke-width", 2)
+                .attr("stroke-dasharray", "4 4");
+            */
         }
+        // --- END NEW FUNCTION ---
 
-        // --- CHART 4: PIE CHART ---
+
+        <!-- CHART 2: AREA (TRIANGLE) CHART (REMOVED) -->
+        
+        <!-- CHART 3: DONUT CHART (REMOVED) -->
+
+        <!-- CHART 4: PIE CHART -->
         function drawPieChart(scores) {
             const container = document.getElementById('pie-chart-container');
             if (!container) return;
@@ -1108,7 +1119,7 @@
 
             const data = [
                 { name: "Blue", value: scores.blue, color: "#3B82F6" },
-                { name: "Red", value: scores.red, color: "#EF4444" },
+                { name: "Red", value: scores.red, color: "#EF4444", color: "#EF4444" },
                 { name: "Green", value: scores.green, color: "#22C55E" },
                 { name: "Yellow", value: scores.yellow, color: "#FACC15" }
             ].filter(d => d.value > 0);
@@ -1161,12 +1172,11 @@
         function handleDragEnd(e) {
             // This is a cleanup function for drops that *don't* land in a valid dropzone
             // (e.g., dropped outside the window)
-            // --- FIX V3: Check if item is still being tracked ---
+            // --- FIX V3: Check if item still being tracked ---
             if (draggedItem) {
                 draggedItem.classList.remove('dragging');
             }
             draggedItem = null; // Always clear on dragend
-            // --- END FIX V3 ---
             document.querySelectorAll('.highlight').forEach(el => el.classList.remove('highlight'));
         }
 
@@ -1231,7 +1241,17 @@
             // Validate the card that was just changed
             if (card) {
                 validateCard(card);
-                checkFormCompletion(false); // Check current card for 'next'
+                
+                // --- FIX for Save Button Bug ---
+                if (currentQuestionIndex === totalQuestions - 1) {
+                    // We are on the last question, so check ALL cards
+                    // to see if the save button should be enabled.
+                    checkFormCompletion(true);
+                } else {
+                    // We are on a normal question, just check the 'next' button.
+                    checkFormCompletion(false);
+                }
+                // --- END FIX ---
             }
         }
 
@@ -1270,10 +1290,11 @@
                         populateWordAnalysis(scores, rankedWords); // <-- Pass scores in
                         
                         // Call all other charts
-                        drawQuadrantChart(scores);
-                        drawQuadrantChartNoAxis(scores); 
+                        // drawQuadrantChart(scores); // <-- REMOVED
+                        // drawQuadrantChartNoAxis(scores); // <-- REMOVED
                         drawQuadrantChartRectangle(scores); 
-                        drawDonutChart(scores);
+                        drawQuadrantChartWords(scores, rankedWords); // <-- ADDED THIS CALL
+                        // drawDonutChart(scores); // <-- REMOVED
                         drawPieChart(scores); 
                     }, 10); 
 
@@ -1337,7 +1358,3 @@
     </script>
 </body>
 </html>
-
-
-
-
