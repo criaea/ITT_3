@@ -656,7 +656,7 @@
 
         // --- REMOVED: CHART 0: WORD MAP CHART ---
         
-        // --- NEW: Function to populate Key Words ---
+        // --- NEW: Function to populate Key Words (Not used in new design, but kept for logic) ---
         function populateWordAnalysis(scores, rankedWords) { // <-- Now receives scores
             const colors = ['blue', 'red', 'green', 'yellow'];
             let capacities = {};
@@ -928,7 +928,7 @@
             ];
 
             <!-- Max score set to 120 for 2x area scaling -->
-            const maxPossibleScore = 120; 
+            const maxPossibleScore = 160; 
             const maxPossibleSide = Math.sqrt(maxPossibleScore);
             const maxRadius = Math.min(width / 2, height / 2) * 1.0; 
             const scale = maxRadius / maxPossibleSide; // <-- ADDED THIS LINE TO FIX ERROR
@@ -976,10 +976,33 @@
 
                 if (wordsToShow.length > 0) {
                     
-                    // --- NEW: Font and Layout Logic ---
+                    // --- Dynamic Font Size Calculation ---
+                    const totalWords = wordsToShow.length;
+                    
+                    // Define constraints for the font size (in pixels)
+                    const maxFontSizePx = 20;
+                    const minFontSizePx = 10;
+                    const verticalPadding = 20; // 10px top/bottom padding
+                    const lineHeightFactor = 1.4;
+
+                    // Calculate the size needed if each word takes up one row
+                    const usableHeight = scaledSide - verticalPadding;
+                    const requiredLineHeight = usableHeight / totalWords;
+                    
+                    // Calculate a target font size based on the required line height (dividing by line height factor)
+                    let targetFontSizePx = requiredLineHeight / lineHeightFactor;
+
+                    // Clamp the target font size between min and max constraints
+                    let dynamicFontSizePx = Math.max(minFontSizePx, Math.min(maxFontSizePx, targetFontSizePx));
+                    
+                    let baseFontSize = `${dynamicFontSizePx}px`; 
+                    
+                    // --- End Dynamic Font Size Calculation ---
+
+                    // --- Font and Layout Logic ---
                     let fontFamily = 'sans-serif';
                     let fontWeight = 'normal';
-                    let fontSize = '0.85rem'; // Base smaller font for fit
+                    let fontSize = baseFontSize; // Use the dynamic size
 
                     switch (colorName) {
                         case 'blue':
@@ -997,7 +1020,8 @@
                         case 'yellow':
                             fontFamily = "'Cursive', cursive"; // Calligraphy/Script font
                             fontWeight = 'normal'; // Will vary by rank
-                            fontSize = '1rem'; // Slightly larger for script
+                            // Script font often needs more space, so scale it up slightly if possible
+                            fontSize = `${dynamicFontSizePx * 1.1}px`; 
                             break;
                     }
 
@@ -1019,7 +1043,7 @@
                         else if (word.rank == 3) opacity = '0.5';
                         else if (word.rank == 4) opacity = '0.3';
 
-                        // --- CHANGED: display: block for one word per row. Increased line-height for spacing. ---
+                        // Use the calculated fontSize
                         const wordTagStyle = `
                             font-family: ${fontFamily}; 
                             font-weight: ${finalWeight}; 
@@ -1028,7 +1052,7 @@
                             color: #1f2937; /* Very dark text for max contrast */
                             display: block; 
                             text-align: center;
-                            line-height: 1.4; /* Increased line height for vertical spacing */
+                            line-height: 1.4; /* Set line height relative to the dynamic font size */
                         `;
 
                         return `<span style="${wordTagStyle.replace(/\s+/g, ' ')}">${word.text}</span>`;
