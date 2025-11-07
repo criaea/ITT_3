@@ -125,7 +125,10 @@
 <body class="bg-gray-100 font-sans p-4 md:p-8 min-h-screen flex items-center justify-center">
 
     <!-- Main Test Page Container --><main id="test-page" class="container bg-white rounded-xl shadow-2xl p-6 md:p-10 w-full max-w-4xl mx-auto">
-        <h1 class="text-3xl md:text-4xl font-bold text-center mb-3 text-blue-700">Millennium Profile</h1>
+        <h1 class="text-3xl md:text-4xl font-bold text-center mb-3 text-blue-700">
+            Millennium Profile 
+            <span class="text-sm font-normal text-gray-500 align-middle ml-2">draft version</span>
+        </h1>
         <p class="text-center text-gray-600 mb-8">
             For each question, drag the words from the "Word Choices" into the slots on the right.
         </p>
@@ -168,12 +171,18 @@
         </div>
         <p id="error-message" class="text-red-600 font-semibold mt-4 h-6 text-center"></p>
         <p id="success-message" class="text-green-600 font-semibold mt-4 h-6 text-center"></p>
+    
+        <!-- NEW FOOTER -->
+        <p class="text-center text-sm text-gray-500 mt-8">&copy; ourfields.ie</p>
     </main>
 
     <!-- Results Page Container (hidden by default) 
     --><div id="results-page" class="hidden fixed inset-0 bg-gray-100 p-4 overflow-y-auto">
         <div class="container bg-white rounded-xl shadow-2xl p-6 md:p-10 w-full max-w-7xl mx-auto flex flex-col items-center my-auto"> <!-- CHANGED: max-w-5xl to max-w-7xl -->
-            <h1 class="text-3xl md:text-4xl font-bold text-center mb-6 text-blue-700">Your Profile Results</h1>
+            <h1 class="text-3xl md:text-4xl font-bold text-center mb-6 text-blue-700">
+                Your Profile Results
+                <span class="text-sm font-normal text-gray-500 align-middle ml-2">draft version</span>
+            </h1>
             
             <!-- Grid container for multiple charts -->
             <div class="grid grid-cols-1 md:grid-cols-1 gap-8 w-full">
@@ -279,6 +288,8 @@
                     Back to Test
                 </button>
             </div>
+            <!-- NEW FOOTER -->
+            <p class="text-center text-sm text-gray-500 mt-8">&copy; ourfields.ie</p>
         </div>
     </div>
 
@@ -775,7 +786,7 @@
             
             // --- UPDATED ARROWHEAD DEFINITION (Smaller and Black Color) ---
             const ARROW_PATH = "M0,0 L10,5 L0,10 Z";
-            const MARKER_SIZE = 4; // Much smaller arrow size (was 8)
+            const MARKER_SIZE = 3; // Much smaller arrow size (was 8)
             const ARROW_COLOR = "#000000"; // Black color
 
             // Define the shared marker path. We use a single definition and set fill/stroke to black.
