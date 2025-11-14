@@ -22,17 +22,7 @@
             text-shadow: 0 0 3px rgba(0,0,0,0.5);
             text-anchor: middle; /* Center text horizontally */
         }
-        /* D3 Radar Chart text styling */
-        .radar-label {
-            font-size: 0.875rem; /* text-sm */
-            font-weight: 600; /* font-semibold */
-            text-anchor: middle;
-            fill: #374151; /* gray-700 */
-        }
         
-        /* --- REMOVED Word Map Text Styles --- */
-
-
         /* --- New Drag and Drop Styles --- */
         /* The draggable word itself */
         .draggable-word {
@@ -113,22 +103,52 @@
             gap: 0.75rem; /* space-y-3 */
         }
 
-        /* --- NEW: Style for Key Words list --- */
+        /* --- Style for Key Words list --- */
         .key-word-rank-1 { font-weight: 700; color: #1f2937; } /* bold, gray-800 */
         .key-word-rank-2 { font-weight: 500; color: #374151; } /* medium, gray-700 */
         .key-word-rank-3 { font-weight: 400; color: #4b5563; opacity: 0.9; } /* normal, gray-600 */
         .key-word-rank-4 { font-weight: 300; color: #6b7280; opacity: 0.8; } /* light, gray-500 */
-        /* --- END NEW --- */
-
+        
+        /* --- NEW: Interactive Tab Styles --- */
+        .style-tab {
+            padding: 0.75rem 1.5rem;
+            font-size: 1.125rem;
+            font-weight: 600;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #4b5563; /* gray-600 */
+            background-color: #f3f4f6; /* gray-100 */
+            border: 2px solid #e5e7eb; /* gray-200 */
+        }
+        
+        /* Active state for tabs */
+        .style-tab.active-blue {
+            background-color: #dbeafe; /* blue-100 */
+            color: #1d4ed8; /* blue-700 */
+            border-color: #93c5fd; /* blue-300 */
+        }
+        .style-tab.active-red {
+            background-color: #fee2e2; /* red-100 */
+            color: #b91c1c; /* red-700 */
+            border-color: #fca5a5; /* red-300 */
+        }
+        .style-tab.active-green {
+            background-color: #dcfce7; /* green-100 */
+            color: #15803d; /* green-700 */
+            border-color: #86efac; /* green-300 */
+        }
+        .style-tab.active-yellow {
+            background-color: #fef9c3; /* yellow-100 */
+            color: #a16207; /* yellow-700 */
+            border-color: #fde047; /* yellow-300 */
+        }
     </style>
 </head>
 <body class="bg-gray-100 font-sans p-4 md:p-8 min-h-screen flex items-center justify-center">
 
     <!-- Main Test Page Container --><main id="test-page" class="container bg-white rounded-xl shadow-2xl p-6 md:p-10 w-full max-w-4xl mx-auto">
-        <h1 class="text-3xl md:text-4xl font-bold text-center mb-3 text-blue-700">
-            Millennium Profile 
-            <span class="text-sm font-normal text-gray-500 align-middle ml-2">draft version</span>
-        </h1>
+        <h1 class="text-3xl md:text-4xl font-bold text-center mb-3 text-blue-700">Millennium Profile</h1>
         <p class="text-center text-gray-600 mb-8">
             For each question, drag the words from the "Word Choices" into the slots on the right.
         </p>
@@ -171,125 +191,94 @@
         </div>
         <p id="error-message" class="text-red-600 font-semibold mt-4 h-6 text-center"></p>
         <p id="success-message" class="text-green-600 font-semibold mt-4 h-6 text-center"></p>
-    
-        <!-- NEW FOOTER -->
-        <p class="text-center text-sm text-gray-500 mt-8">&copy; ourfields.ie</p>
     </main>
 
     <!-- Results Page Container (hidden by default) 
     --><div id="results-page" class="hidden fixed inset-0 bg-gray-100 p-4 overflow-y-auto">
-        <div class="container bg-white rounded-xl shadow-2xl p-6 md:p-10 w-full max-w-7xl mx-auto flex flex-col items-center my-auto"> <!-- CHANGED: max-w-5xl to max-w-7xl -->
-            <h1 class="text-3xl md:text-4xl font-bold text-center mb-6 text-blue-700">
-                Your Profile Results
-                <span class="text-sm font-normal text-gray-500 align-middle ml-2">draft version</span>
-            </h1>
+        <div class="container bg-white rounded-xl shadow-2xl p-6 md:p-10 w-full max-w-5xl mx-auto flex flex-col items-center my-auto">
             
-            <!-- Grid container for multiple charts -->
-            <div class="grid grid-cols-1 md:grid-cols-1 gap-8 w-full">
-
-                <!-- 1. Chart 1.5: Quadrant Chart (Rectangle Avg) - FIRST CHART -->
-                <div class="w-full"> 
-                    <h2 class="text-xl font-bold text-center text-gray-800 mb-4">Quadrant Chart (Rectangle Average)</h2>
-                    <div id="quadrant-chart-rect-container" class="w-full h-[70vh] overflow-hidden"> 
-                        <svg id="quadrant-chart-rect" class="w-full h-full"></svg>
-                    </div>
-                    <!-- ARROW KEY/LEGEND ADDED HERE -->
-                    <div class="mt-4 flex flex-col items-center space-y-2 text-lg font-semibold">
-                        <p class="text-gray-700">Adjustment Visual (Appears if score is more than 24 points from the 120 average):</p>
-                        <div class="flex justify-center space-x-6">
-                            <div class="flex items-center space-x-2 text-blue-700">
-                                <span class="font-bold">Line towards center:</span> Score **> 144** (Must shrink to reach 120).
-                            </div>
-                            <div class="flex items-center space-x-2 text-green-700">
-                                <span class="font-bold">Line away from center:</span> Score **< 96** (Must grow to reach 120).
-                            </div>
-                        </div>
-                    </div>
+            <!-- Section 1: Pie Chart (First Item) -->
+            <div class="w-full mb-8">
+                <h2 class="text-3xl font-bold text-center text-gray-800 mb-4">Your Profile Proportions</h2>
+                <div id="pie-chart-container" class="w-full h-[60vh] max-w-lg mx-auto overflow-hidden">
+                    <svg id="pie-chart" class="w-full h-full"></svg>
                 </div>
-
-                
-                <!-- 2. Chart 4: Pie Chart (Proportions) - SECOND CHART (MOVED UP) -->
-                <div class="w-full"> 
-                    <h2 class="text-xl font-bold text-center text-gray-800 mb-4">Pie Chart (Proportions)</h2>
-                    <div id="pie-chart-container" class="w-full h-[60vh] overflow-hidden"> 
-                        <svg id="pie-chart" class="w-full h-full"></svg>
-                    </div>
-                </div>
-
-                <!-- 3. Chart 1.6: Quadrant Chart (Words) - THIRD CHART (MOVED DOWN) -->
-                <div class="w-full">
-                    <h2 class="text-xl font-bold text-center text-gray-800 mb-4">Quadrant Chart (Key Words)</h2>
-                    <div id="quadrant-chart-words-container" class="w-full h-[95vh] overflow-hidden"> 
-                        <svg id="quadrant-chart-words" class="w-full h-full"></svg>
-                    </div>
-                    <!-- ARROW KEY/LEGEND REMOVED FROM HERE -->
-                </div>
-
             </div>
 
-            <!-- Profile Analysis Section -->
+            <!-- Section 2: Quadrant Chart (Rectangle Avg) -->
+            <div class="w-full mb-12">
+                 <h2 class="text-3xl font-bold text-center text-gray-800 mb-4">Your Score Quadrant</h2>
+                 <div id="quadrant-chart-rect-container" class="w-full h-[70vh] max-w-2xl mx-auto overflow-hidden">
+                    <svg id="quadrant-chart-rect" class="w-full h-full"></svg>
+                 </div>
+            </div>
+
+            <!-- Section 3: Profile Title Section -->
+            <div id="profile-title-container" class="text-center border-t-2 border-gray-200 pt-10 pb-6 mb-6 w-full">
+                <!-- Content will be generated by JS -->
+            </div>
+
+            <!-- Section 4: At a Glance Section -->
+            <div id="at-a-glance-container" class="w-full mb-8">
+                <!-- Content will be generated by JS -->
+            </div>
+            
+            <!-- Section 5: Key Words Quadrant -->
+            <div class="w-full mb-12">
+                <h2 class="text-3xl font-bold text-center text-gray-800 mb-6">Your Key Word Quadrant</h2>
+                <div id="key-words-grid" class="grid grid-cols-1 md:grid-cols-2 gap-px bg-gray-300 rounded-lg shadow-md overflow-hidden" style="transition: all 0.5s ease; min-height: 80vh;">
+                    <div class="bg-blue-100 p-6 overflow-y-auto"> 
+                        <h3 class="text-2xl font-bold text-blue-800 mb-3">BLUE</h3>
+                        <div id="blue-key-words"></div>
+                    </div>
+                    <div class="bg-red-100 p-6 overflow-y-auto">
+                        <h3 class="text-2xl font-bold text-red-800 mb-3">RED</h3>
+                        <div id="red-key-words"></div>
+                    </div>
+                    <div class="bg-green-100 p-6 overflow-y-auto">
+                        <h3 class="text-2xl font-bold text-green-800 mb-3">GREEN</h3>
+                        <div id="green-key-words"></div>
+                    </div>
+                    <div class="bg-yellow-100 p-6 overflow-y-auto">
+                        <h3 class="text-2xl font-bold text-yellow-800 mb-3">YELLOW</h3>
+                        <div id="yellow-key-words"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 6: Strengths & Blind Spots Section -->
+            <div id="strengths-blindspots-container" class="w-full mb-12">
+                 <!-- Content will be generated by JS -->
+            </div>
+
+            <!-- Section 7: Communication Section -->
+            <div id="communication-container" class="w-full mb-12">
+                 <!-- Content will be generated by JS -->
+            </div>
+
+            <!-- NEW Section 8: Interactive Style Explorer -->
             <div class="w-full mt-12">
-                <h2 class="text-3xl font-bold text-center text-gray-800 mb-6">Your Profile Analysis</h2>
-                <!-- This is now a single container with a 2x2 grid inside -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-px bg-gray-300 rounded-lg shadow-md overflow-hidden">
-                    
-                    <!-- BLUE (Upper Left) -->
-                    <div class="bg-blue-100 p-6"> <!-- Fixed typo classV and removed rounding/shadow -->
-                        <h3 class="text-2xl font-bold text-blue-800 mb-3">BLUE (Upper Left)</h3>
-                        <ul class="list-disc list-inside text-blue-900 space-y-1">
-                            <li>Wants to see data and statistics on performance.</li>
-                            <li>Looks at energy efficiency.</li>
-                            <li>Looks at cost of vehicle, trade in value.</li>
-                            <li>Comparison shopping with other vehicles.</li>
-                            <li>Ease of maintenance.</li>
-                            <li>Wants to know how it works.</li>
-                            <li>Likes power and precision handling.</li>
-                        </ul>
-                    </div>
-
-                    <!-- RED (Upper Right) -->
-                    <div class="bg-red-100 p-6"> <!-- Removed rounding/shadow -->
-                        <h3 class="text-2xl font-bold text-red-800 mb-3">RED (Upper Right)</h3>
-                        <ul class="list-disc list-inside text-red-900 space-y-1">
-                            <li>Looks at the aesthetic qualities: sportiness, colour, form. "Cutting Edge" qualities.</li>
-                            <li>Wants it to fit the dream, personal image, long range plans.</li>
-                            <li>More willing to experiment and take some risks.</li>
-                            <li>1st model buyer, early innovator.</li>
-                        </ul>
-                    </div>
-
-                    <!-- GREEN (Lower Left) -->
-                    <div class="bg-green-100 p-6"> <!-- Removed rounding/shadow -->
-                        <h3 class="text-2xl font-bold text-green-800 mb-3">GREEN (Lower Left)</h3>
-                        <ul class="list-disc list-inside text-green-900 space-y-1">
-                            <li>Interested in safety features, and durability.</li>
-                            <li>The practicality of size, number of doors, storage space, strain resistant materials, features such as interior trunk/gas lock.</li>
-                            <li>Looks at maintenance requirements.</li>
-                            <li>Have done research and know what they want.</li>
-                        </ul>
-                    </div>
-
-                    <!-- YELLOW (Lower Right) -->
-                    <div class="bg-yellow-100 p-6"> <!-- Removed rounding/shadow -->
-                        <h3 class="text-2xl font-bold text-yellow-800 mb-3">YELLOW (Lower Right)</h3>
-                        <ul class="list-disc list-inside text-yellow-900 space-y-1">
-                            <li>The 'Feel' and comfort of the vehicle is important, user friendliness of controls.</li>
-                            <li>WWants to 'Love' the car.</li>
-                            <li>Impacted by friendliness of sale and service organisation.</li>
-                            <li>Knows it's a right choice.</li>
-                            <li>Will buy based on a friends recommendations.</li>
-                        </ul>
-                    </div>
+                <h2 class="text-3xl font-bold text-center text-gray-800 mb-6">Explore the Full Style Summary</h2>
+                
+                <!-- Tab Buttons -->
+                <div id="style-explorer-tabs" class="flex flex-wrap justify-center gap-4 mb-6">
+                    <button class="style-tab" data-color="blue">BLUE</button>
+                    <button class="style-tab" data-color="red">RED</button>
+                    <button class="style-tab" data-color="green">GREEN</button>
+                    <button class="style-tab" data-color="yellow">YELLOW</button>
+                </div>
+                
+                <!-- Tab Content Area -->
+                <div id="style-explorer-content" class="bg-gray-50 p-6 md:p-8 rounded-lg shadow-inner">
+                    <!-- Content will be generated by JS -->
                 </div>
             </div>
             
-            <div class="text-center mt-12"> <!-- Added more margin-top -->
+            <div class="text-center mt-12">
                 <button id="back-to-test-button" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-8 rounded-lg shadow-lg transition-all duration-300">
                     Back to Test
                 </button>
             </div>
-            <!-- NEW FOOTER -->
-            <p class="text-center text-sm text-gray-500 mt-8">&copy; ourfields.ie</p>
         </div>
     </div>
 
@@ -308,11 +297,204 @@
         const prevButton = document.getElementById('prev-button');
         const nextButton = document.getElementById('next-button');
         const questionCounter = document.getElementById('question-counter');
+        const styleExplorerTabs = document.getElementById('style-explorer-tabs');
+        const styleExplorerContent = document.getElementById('style-explorer-content');
 
         // --- STATE ---
         let currentQuestionIndex = 0;
         const totalQuestions = 24;
         let draggedItem = null;
+
+        // --- NEW: ALL PROFILE DATA (NOW WITH FULL SUMMARY) ---
+        const profileDataStore = {
+            blue: {
+                title: "The Observer",
+                summary: "Blue behaviour is motivated by strong needs for procedure and task-focus.",
+                atAGlance: {
+                    "Behaviour Pattern": "Self-Contained / Indirect",
+                    "Pace": "Slow / Systematic",
+                    "Priority": "The Task: the process",
+                    "Fears": "Conflict / Embarrassment",
+                    "Motivated by": "Procedures",
+                    "Management Style": "Rule Adherence",
+                    "Communication Style": "Writes",
+                    "Under Tension": "Withdraw / Avoid",
+                    "Irritated By": "Surprises, Unpredictability"
+                },
+                strengths: ["Compliant", "Careful", "Systematic", "Precise", "Accurate", "Perfectionist", "Logical"],
+                blindSpots: ["Withdraw / Avoid (under tension)", "Irritated by surprises / unpredictability", "Can be firm, persistent, or stubborn (Low D)", "Fears Conflict"],
+                communicationTips: [
+                    "Send full written details in advance of your meeting.",
+                    "Go the extra mile on preparation so you can answer all their questions when you meet.",
+                    "Greet them in a business-like and civil way, and move to the task immediately.",
+                    "Present your case in a practical, logical and paced way.",
+                    "Pause to regularly ask questions to draw the Blue out.",
+                    "Support with facts and figures and demonstrate application.",
+                    "Don't go for a quick answer. Give the Blue time to think. Don't push.",
+                    "Make sure they get both sides of the story - and don't hold back information."
+                ],
+                fullSummary: {
+                    "Behaviour Pattern": "Self-Contained / Indirect",
+                    "Appearance": "Formal, Conservative",
+                    "Work-Space": "Structured, Organised, Functional, Formal",
+                    "Pace": "Slow/Systematic",
+                    "Priority": "The Task: the process",
+                    "Fears": "Embarrassment",
+                    "Under Tension Will": "Withdraw/Avoid",
+                    "Seeks": "Accuracy",
+                    "Needs to Know (Benefits)": "How they justify the purchase logically. How it works.",
+                    "Gains Security By": "Preparation",
+                    "Wants to Maintain": "Credibility",
+                    "Support Their": "Thoughts",
+                    "Achieves Acceptance By": "Correctness, Thoroughness",
+                    "Likes You to Be": "Precise",
+                    "Wants to Be": "Correct",
+                    "Irritated By": "Surprises, Unpredictability",
+                    "Measures Personal Worth By": "Precision, Accuracy, Activity",
+                    "Decisions Are": "Deliberate"
+                }
+            },
+            red: {
+                title: "The Director",
+                summary: "Red behaviour is motivated by strong needs for power and independence.",
+                atAGlance: {
+                    "Behaviour Pattern": "Self-Contained / Direct",
+                    "Pace": "Fast / Decisive",
+                    "Priority": "The Task: the results",
+                    "Fears": "Failure / Loss of control",
+                    "Motivated by": "Power",
+                    "Management Style": "Directing",
+                    "Communication Style": "Tells",
+                    "Under Tension": "Dictate / Assert",
+                    "Irritated By": "Inefficiency, Indecision"
+                },
+                strengths: ["Driving", "Competitive", "Forceful", "Inquisitive", "Direct", "Self-starter", "Assertive"],
+                blindSpots: ["Dictate / Assert (under tension)", "Irritated by inefficiency / indecision", "Can be hesitant, mild, or non-demanding (Low A)", "Fears Failure"],
+                communicationTips: [
+                    "Expect to receive a hostile reception. Be prepared for scepticism, anger, belligerence, and impatience.",
+                    "Stress the importance of benefits that provide autonomy, control, freedom of action and prestige.",
+                    "Let the seam out; allow him to talk out vested certainties.",
+                    "Keep calm; don't ride to the bait and don't let the customer upset you.",
+                    "Be convincing and show strength, without becoming argumentative or aggressive.",
+                    "Never argue; try to understand and then reason.",
+                    "Use open-ended questions summarise and reflect. Avoid leading questions.",
+                    "Allow the Red to take the credit-even if the ideas are yours. But don't make it obvious."
+                ],
+                fullSummary: {
+                    "Behaviour Pattern": "Self-contained/Direct",
+                    "Appearance": "Businesslike, Functional",
+                    "Work-Space": "Busy, Formal, Efficient, Structured",
+                    "Pace": "Fast/Decisive",
+                    "Priority": "The Task: the results",
+                    "Fears": "Loss of control",
+                    "Under Tension Will": "Dictate/Assert",
+                    "Seeks": "Productivity",
+                    "Needs to Know (Benefits)": "What it does. By when. What it costs.",
+                    "Gains Security By": "Control",
+                    "Wants to Maintain": "Success",
+                    "Support Their": "Goals",
+                    "Achieves Acceptance By": "Leadership, Competition",
+                    "Likes You to Be": "To the point",
+                    "Wants to Be": "In charge",
+                    "Irritated By": "Inefficiency, Indecision",
+                    "Measures Personal Worth By": "Results, Track record, Measurable progress",
+                    "Decisions Are": "Decisive"
+                }
+            },
+            green: {
+                title: "The Supporter",
+                summary: "Green behaviour is motivated by strong needs for security and one-to-one relationships.",
+                atAGlance: {
+                    "Behaviour Pattern": "Open / Indirect",
+                    "Pace": "Slow / Easy",
+                    "Priority": "Maintaining relationships",
+                    "Fears": "Insecurity / Confrontation",
+                    "Motivated by": "Security",
+                    "Management Style": "Procedural",
+                    "Communication Style": "Listens",
+                    "Under Tension": "Submit / Acquiesce",
+                    "Irritated By": "Insensitivity, Impatience"
+                },
+                strengths: ["Dependable", "Deliberate", "Amiable", "Persistent", "Good Listener", "Kind"],
+                blindSpots: ["Submit / Acquiesce (under tension)", "Irritated by insensitivity / impatience", "Can be mobile, alert, active, or restless (Low C)", "Fears Confrontation"],
+                communicationTips: [
+                    "Stress the importance of benefit that provide low risk stability, guarantees, permanence and solid value.",
+                    "Be patient and slow down. Don't rush. Don't turn the screw.",
+                    "Be concerned; let the Green know you're not there just for your own interests.",
+                    "Expect the Green to be apprehensive, distrustful and uncommunicative.",
+                    "Establish trust. Use genuine third party referrals.",
+                    "Support the process gently and firmly. The Green won't take the lead but lead in a low-key, unhurried manner.",
+                    "Let the Green keep it's self-respect. Don't pressurise.",
+                    "Rely mainly on open-ended questions, reflective pauses and brief statements; don't drive on with close-ended questions.",
+                    "Be ready to change if the Green's behaviour changes."
+                ],
+                fullSummary: {
+                    "Behaviour Pattern": "Open/Indirect",
+                    "Appearance": "Casual, Conforming",
+                    "Work-Space": "Personal, Relaxed, Friendly, Informal",
+                    "Pace": "Slow/Easy",
+                    "Priority": "Maintaining relationships",
+                    "Fears": "Confrontation",
+                    "Under Tension Will": "Submit/Acquiesce",
+                    "Seeks": "Attention",
+                    "Needs to Know (Benefits)": "How it will affect their personal circumstances.",
+                    "Gains Security By": "Close relationships",
+                    "Wants to Maintain": "Relationships",
+                    "Support Their": "Feelings",
+                    "Achieves Acceptance By": "Conformity, Loyalty",
+                    "Likes You to Be": "Pleasant",
+                    "Wants to Be": "Liked",
+                    "Irritated By": "Insensitivity, Impatience",
+                    "Measures Personal Worth By": "Compatibility with others, Depth of relationships",
+                    "Decisions Are": "Considered"
+                }
+            },
+            yellow: {
+                title: "The Inspirer",
+                summary: "Yellow customer behaviour is motivated by deep-felt social needs supported by a strong self-esteem requirement.",
+                atAGlance: {
+                    "Behaviour Pattern": "Open / Direct",
+                    "Pace": "Fast / Spontaneous",
+                    "Priority": "Relationships",
+                    "Fears": "Rejection / Loss of prestige",
+                    "Motivated by": "Recognition",
+                    "Management Style": "Leading",
+                    "Communication Style": "Sell",
+                    "Under Tension": "Attack / Be sarcastic",
+                    "Irritated By": "Boredom, Routine"
+                },
+                strengths: ["Influential", "Persuasive", "Friendly", "Verbal", "Communicative", "Positive"],
+                blindSpots: ["Attack / Be sarcastic (under tension)", "Irritated by boredom / routine", "Can be reserved, reflective, or suspicious (Low B)", "Fears Rejection"],
+                communicationTips: [
+                    "Present an outgoing and friendly stance, but don't get drawn entirely into the Yellow Party.",
+                    "Make your visit personal : remember the Yellow's overriding interest in relationships.",
+                    "Stress the importance of benefits that offer popularity, a chance to do something for other people, and happiness.",
+                    "While focusing on business, make sure it's loose enough to allow some deviation.",
+                    "Don't take the Yellow's enthusiasm at face value; 'yes's can cloak serious doubts. Root out the doubts, dig deep.",
+                    "Rely on closed-ended questions; summarise and make reflective statement. Do not use open-ended questions."
+                ],
+                fullSummary: {
+                    "Behaviour Pattern": "Open/Direct",
+                    "Appearance": "Fashionable, Stylish",
+                    "Work-Space": "Stimulating, Personal, Cluttered, Friendly",
+                    "Pace": "Fast/Spontaneous",
+                    "Priority": "Relationships: interacting",
+                    "Fears": "Loss of prestige",
+                    "Under Tension Will": "Attack/Be sarcastic",
+                    "Seeks": "Recognition",
+                    "Needs to Know (Benefits)": "How it enhances their status. Who else uses it.",
+                    "Gains Security By": "Status",
+                    "Wants to Maintain": "Ideas",
+                    "Support Their": "Feelings",
+                    "Achieves Acceptance By": "Playfulness, Stimulating environment",
+                    "Likes You to Be": "Stimulating",
+                    "Wants to Be": "Admired",
+                    "Irritated By": "Boredom, Routine",
+                    "Measures Personal Worth By": "Acknowledgement, Recognition, Applause, Compliments",
+                    "Decisions Are": "Spontaneous"
+                }
+            }
+        };
 
         // --- QUESTION DATA ---
         const questionsData = [
@@ -375,7 +557,7 @@
             // Q9
             [
                 { word: "Sociable", color: "yellow" },
-                { word: "Patient", color: "green" }, // <-- FIX 1 HERE
+                { word: "Patient", color: "green" },
                 { word: "Self reliant, independent", color: "red" },
                 { word: "Mild, reserved", color: "blue" }
             ],
@@ -404,7 +586,7 @@
             [
                 { word: "Aggressive, challenger", color: "red" },
                 { word: "Outgoing, entertaining", color: "yellow" },
-                { word: "Easily taken advantage of", color: "green" },
+                { word: "Easy mark, easily taken advantage of", color: "green" },
                 { word: "Fearful, afraid", color: "blue" }
             ],
             // Q14
@@ -453,7 +635,7 @@
             [
                 { word: "Argumentative, Controlling", color: "red" },
                 { word: "Adaptable, flexible", color: "green" },
-                { word: "Nonchalant, indifferent", color: "blue" }, // <-- FIX 2 HERE
+                { word: "Nonchalant, indifferent", color: "blue" },
                 { word: "Light-hearted, carefree", color: "yellow" }
             ],
             // Q21
@@ -614,7 +796,7 @@
 
         // --- CALCULATION & CHARTING FUNCTIONS ---
 
-        // NEW: Collects scores AND ranked word list
+        // Collects scores AND ranked word list
         function collectRankedWords() {
             const pointMap = { "1": 10, "2": 6, "3": 3, "4": 1 };
             let scores = { blue: 0, red: 0, green: 0, yellow: 0 };
@@ -656,19 +838,9 @@
             
             return { scores, rankedWords };
         }
-
-        // DEPRECATED: calculateScores() is now part of collectRankedWords()
-        function calculateScores() {
-            // This function is no longer called, but we leave it
-            // just in case.
-            const data = collectRankedWords();
-            return data.scores;
-        }
-
-        // --- REMOVED: CHART 0: WORD MAP CHART ---
         
-        // --- NEW: Function to populate Key Words (Not used in new design, but kept for logic) ---
-        function populateWordAnalysis(scores, rankedWords) { // <-- Now receives scores
+        // --- Function to populate Key Words ---
+        function populateWordAnalysis(scores, rankedWords) { 
             const colors = ['blue', 'red', 'green', 'yellow'];
             let capacities = {};
             let wordsToDisplay = {};
@@ -682,19 +854,15 @@
 
             // 2. Calculate grid proportions
             const totalWords = capacities.blue + capacities.red + capacities.green + capacities.yellow;
-
             let topRowFr, bottomRowFr, leftColFr, rightColFr;
 
             if (totalWords === 0) {
-                // Default to equal grid if no words
                 topRowFr = 1; bottomRowFr = 1; leftColFr = 1; rightColFr = 1;
             } else {
                 const topRowWords = capacities.blue + capacities.red;
                 const bottomRowWords = capacities.green + capacities.yellow;
                 const leftColWords = capacities.blue + capacities.green;
                 const rightColWords = capacities.red + capacities.yellow;
-
-                // Use 1 as a minimum to prevent 0fr
                 topRowFr = topRowWords || 1;
                 bottomRowFr = bottomRowWords || 1;
                 leftColFr = leftColWords || 1;
@@ -712,7 +880,6 @@
             colors.forEach(color => {
                 const container = document.getElementById(`${color}-key-words`);
                 if (!container) return;
-
                 const currentWords = wordsToDisplay[color]; // This is an array
 
                 if (currentWords.length === 0) {
@@ -725,424 +892,22 @@
                 }
 
                 // 5. Create the simple bulleted list
-                // --- FIX: Change wordsToDisplay.map to currentWords.map ---
                 const listHtml = currentWords.map(word => {
-                    // Add a style based on rank
                     return `<li class="key-word-rank-${word.rank}">${word.text}</li>`;
                 }).join('');
                 
                 container.innerHTML = `<ul class="list-disc list-inside space-y-1">${listHtml}</ul>`;
             });
         }
-        // --- END NEW FUNCTION ---
-
-
-        <!-- CHART 1: QUADRANT CHART (REMOVED) -->
-        <!-- CHART 1.B: QUADRANT CHART (NO AXES) (REMOVED) -->
-
-
-        <!-- CHART 1.5: Quadrant Chart (Rectangle Avg) -->
-        function drawQuadrantChartRectangle(scores) {
-            const chartContainer = document.getElementById('quadrant-chart-rect-container');
-            if (!chartContainer) return;
-            const width = chartContainer.clientWidth;
-            const height = chartContainer.clientHeight;
-            
-            const svg = d3.select("#quadrant-chart-rect")
-                .attr("viewBox", `0 0 ${width} ${height}`)
-                .attr("preserveAspectRatio", "xMidYMid meet");
-            svg.html(""); // Clear existing content
-
-            const centerX = width / 2;
-            const centerY = height / 2;
-
-            const data = [
-                { name: "Blue", value: scores.blue, color: "#3B82F6", quadrant: 'top-left' },
-                { name: "Red", value: scores.red, color: "#EF4444", quadrant: 'top-right' },
-                { name: "Green", value: scores.green, color: "#22C55E", quadrant: 'bottom-left' },
-                { name: "Yellow", value: scores.yellow, color: "#FACC15", quadrant: 'bottom-right' }
-            ];
-            
-            // Map color name to hex value for dynamic use
-            const colorMap = {
-                'Blue': '#3B82F6',
-                'Red': '#EF4444',
-                'Green': '#22C55E',
-                'Yellow': '#FACC15'
-            };
-
-            // --- CHANGE: 1.5x area scaling (Max side length = sqrt(240/1.5) = sqrt(160)) ---
-            const maxPossibleScore = 160; 
-            const maxPossibleSide = Math.sqrt(maxPossibleScore);
-            const maxRadius = Math.min(width / 2, height / 2) * 1.0; 
-            const scale = maxRadius / maxPossibleSide; 
-
-            const averageScore = 120;
-            const averageSide = Math.sqrt(averageScore);
-            const averageScaledSide = averageSide * scale; // This is the 'radius' for the rect
-            
-            const chartGroup = svg.append("g")
-                .attr("transform", `translate(${centerX}, ${centerY})`);
-            
-            // --- UPDATED ARROWHEAD DEFINITION (Smaller and Black Color) ---
-            const ARROW_PATH = "M0,0 L10,5 L0,10 Z";
-            const MARKER_SIZE = 3; // Much smaller arrow size (was 8)
-            const ARROW_COLOR = "#000000"; // Black color
-
-            // Define the shared marker path. We use a single definition and set fill/stroke to black.
-            svg.append("defs").append("marker")
-                .attr("id", "arrowhead")
-                .attr("viewBox", "0 0 10 10")
-                .attr("refX", 10) 
-                .attr("refY", 5) 
-                .attr("markerWidth", MARKER_SIZE)
-                .attr("markerHeight", MARKER_SIZE)
-                .attr("orient", "auto-start-reverse") 
-                .append("path")
-                .attr("d", ARROW_PATH)
-                .attr("fill", ARROW_COLOR) 
-                .attr("stroke", ARROW_COLOR) 
-                .attr("stroke-width", 0.5); 
-            
-            // --- Draw the squares FIRST ---
-            data.forEach(d => {
-                d.side = Math.sqrt(d.value);
-                const scaledSide = d.side * scale; 
-                const colorHex = colorMap[d.name];
-
-                let x, y, textX, textY;
-                switch (d.quadrant) {
-                    case 'top-left': x = -scaledSide; y = -scaledSide; textX = -scaledSide / 2; textY = -scaledSide / 2; break;
-                    case 'top-right': x = 0; y = -scaledSide; textX = scaledSide / 2; textY = -scaledSide / 2; break;
-                    case 'bottom-left': x = -scaledSide; y = 0; textX = -scaledSide / 2; textY = scaledSide / 2; break;
-                    case 'bottom-right': x = 0; y = 0; textX = scaledSide / 2; textY = scaledSide / 2; break;
-                }
-
-                chartGroup.append("rect")
-                    .attr("x", x)
-                    .attr("y", y)
-                    .attr("width", scaledSide)
-                    .attr("height", scaledSide)
-                    .attr("fill", d.color);
-
-                if (scaledSide > 60) {
-                    chartGroup.append("text")
-                        .attr("class", "chart-label-title")
-                        .attr("x", textX)
-                        .attr("y", textY - 10)
-                        .text(d.name);
-                    chartGroup.append("text")
-                        .attr("class", "chart-label-score") 
-                        .attr("x", textX)
-                        .attr("y", textY + 16)
-                        .text(d.value);
-                }
-
-                // --- DYNAMIC ARROW LOGIC (Connection from Score Box to Average Box) ---
-                const THRESHOLD = 24; // Points difference threshold
-                
-                if (Math.abs(d.value - averageScore) > THRESHOLD) { 
-                    let Sx, Sy; // Start point (Corner of the Score Box)
-                    let Ex, Ey; // End point (Corner of the Average Box)
-                    
-                    // 1. Define Corner Points 
-                    switch (d.quadrant) {
-                        case 'top-left': // Blue Quadrant
-                            Sx = -scaledSide; Sy = -scaledSide;
-                            Ex = -averageScaledSide; Ey = -averageScaledSide;
-                            break;
-                        case 'top-right': // Red Quadrant
-                            Sx = scaledSide; Sy = -scaledSide;
-                            Ex = averageScaledSide; Ey = -averageScaledSide;
-                            break;
-                        case 'bottom-left': // Green Quadrant
-                            Sx = -scaledSide; Sy = scaledSide;
-                            Ex = -averageScaledSide; Ey = averageScaledSide;
-                            break;
-                        case 'bottom-right': // Yellow Quadrant
-                            Sx = scaledSide; Sy = scaledSide;
-                            Ex = averageScaledSide; Ey = averageScaledSide;
-                            break;
-                    }
-
-                    // 2. Draw the line connecting the score box corner to the average box corner
-                    chartGroup.append("line")
-                        .attr("x1", Sx)
-                        .attr("y1", Sy)
-                        .attr("x2", Ex)
-                        .attr("y2", Ey)
-                        .attr("stroke", ARROW_COLOR) // Use black color
-                        .attr("stroke-width", 2) // Slightly thicker line
-                        .attr("marker-end", "url(#arrowhead)") 
-                        .attr("style", `color: ${ARROW_COLOR};`); // Set currentColor context for the marker
-                }
-                // --- END DYNAMIC ARROW LOGIC ---
-            });
-
-            // --- Draw the axes to divide colors ---
-            const axisColor = "#4b5563"; // gray-600
-            const axisWidth = 2;
-            
-            // Y-axis (vertical)
-            chartGroup.append("line")
-                .attr("x1", 0)
-                .attr("y1", -maxRadius)
-                .attr("x2", 0)
-                .attr("y2", maxRadius)
-                .attr("stroke", axisColor)
-                .attr("stroke-width", axisWidth);
-
-            // X-axis (horizontal)
-            chartGroup.append("line")
-                .attr("x1", -maxRadius)
-                .attr("y1", 0)
-                .attr("x2", maxRadius)
-                .attr("y2", 0)
-                .attr("stroke", axisColor)
-                .attr("stroke-width", axisWidth);
-            // --- END AXES ---
-
-            // --- Draw the average RECTANGLE LAST (so it's on top) ---
-            chartGroup.append("rect")
-                .attr("x", -averageScaledSide)
-                .attr("y", -averageScaledSide)
-                .attr("width", averageScaledSide * 2)
-                .attr("height", averageScaledSide * 2)
-                .attr("fill", "none")
-                .attr("stroke", "#6b7280") // gray-500
-                .attr("stroke-width", 2)
-                .attr("stroke-dasharray", "4 4"); // Make it dashed
-        }
-        // --- END FUNCTION ---
-
-        <!-- NEW: Chart 1.6: Quadrant Chart (Words) ---
-        function drawQuadrantChartWords(scores, rankedWords) {
-            const chartContainer = document.getElementById('quadrant-chart-words-container'); // New container
-            if (!chartContainer) return;
-            const width = chartContainer.clientWidth;
-            const height = chartContainer.clientHeight;
-            
-            const svg = d3.select("#quadrant-chart-words") // New SVG ID
-                .attr("viewBox", `0 0 ${width} ${height}`)
-                .attr("preserveAspectRatio", "xMidYMid meet");
-            svg.html("");
-
-            const centerX = width / 2;
-            const centerY = height / 2;
-            
-            // --- UPDATED COLORS for better contrast/design ---
-            const data = [
-                { name: "Blue", value: scores.blue, color: "#C6DAF8", quadrant: 'top-left' }, // Light Blue
-                { name: "Red", value: scores.red, color: "#FDDCDC", quadrant: 'top-right' }, // Light Red/Rose
-                { name: "Green", value: scores.green, color: "#C3E6CB", quadrant: 'bottom-left' }, // Light Green
-                { name: "Yellow", value: scores.yellow, color: "#FEEFC3", quadrant: 'bottom-right' } // Light Yellow/Gold
-            ];
-
-            <!-- Max score set to 120 for 2x area scaling -->
-            const maxPossibleScore = 160; 
-            const maxPossibleSide = Math.sqrt(maxPossibleScore);
-            const maxRadius = Math.min(width / 2, height / 2) * 1.0; 
-            const scale = maxRadius / maxPossibleSide; // <-- ADDED THIS LINE TO FIX ERROR
-
-            const averageScore = 120;
-            const averageSide = Math.sqrt(averageScore);
-            const averageScaledSide = averageSide * scale;
-            
-            const ARROW_SIZE = 15;
-            // Path for a standard UP arrow
-            const pathUp = `M 0,${-ARROW_SIZE / 2} L ${ARROW_SIZE / 2},${ARROW_SIZE / 2} L ${-ARROW_SIZE / 2},${ARROW_SIZE / 2} Z`;
-            // Path for a standard DOWN arrow (inverted Y coordinates)
-            const pathDown = `M 0,${ARROW_SIZE / 2} L ${ARROW_SIZE / 2},${-ARROW_SIZE / 2} L ${-ARROW_SIZE / 2},${-ARROW_SIZE / 2} Z`;
-
-
-            const chartGroup = svg.append("g")
-                .attr("transform", `translate(${centerX}, ${centerY})`);
-
-            // --- Draw the squares FIRST ---
-            data.forEach(d => {
-                d.side = Math.sqrt(d.value);
-                const scaledSide = d.side * scale; 
-
-                let x, y;
-                switch (d.quadrant) {
-                    case 'top-left': x = -scaledSide; y = -scaledSide; break;
-                    case 'top-right': x = 0; y = -scaledSide; break;
-                    case 'bottom-left': x = -scaledSide; y = 0; break;
-                    case 'bottom-right': x = 0; y = 0; break;
-                }
-
-                // Draw the colored rectangle
-                chartGroup.append("rect")
-                    .attr("x", x)
-                    .attr("y", y)
-                    .attr("width", scaledSide)
-                    .attr("height", scaledSide)
-                    .attr("fill", d.color);
-
-                // --- NEW TEXT LOGIC ---
-                const colorName = d.name.toLowerCase();
-                const wordCapacity = Math.floor(d.value / 20);
-                // Get the words for this color, up to its capacity
-                const wordsToShow = rankedWords[colorName].slice(0, wordCapacity);
-
-                if (wordsToShow.length > 0) {
-                    
-                    // --- Dynamic Font Size Calculation ---
-                    const totalWords = wordsToShow.length;
-                    
-                    // Define constraints for the font size (in pixels)
-                    const maxFontSizePx = 20;
-                    const minFontSizePx = 10;
-                    const verticalPadding = 20; // 10px top/bottom padding
-                    const lineHeightFactor = 1.4;
-
-                    // Calculate the size needed if each word takes up one row
-                    const usableHeight = scaledSide - verticalPadding;
-                    const requiredLineHeight = usableHeight / totalWords;
-                    
-                    // Calculate a target font size based on the required line height (dividing by line height factor)
-                    let targetFontSizePx = requiredLineHeight / lineHeightFactor;
-
-                    // Clamp the target font size between min and max constraints
-                    let dynamicFontSizePx = Math.max(minFontSizePx, Math.min(maxFontSizePx, targetFontSizePx));
-                    
-                    let baseFontSize = `${dynamicFontSizePx}px`; 
-                    
-                    // --- End Dynamic Font Size Calculation ---
-
-                    // --- Font and Layout Logic ---
-                    let fontFamily = 'sans-serif';
-                    let fontWeight = 'normal';
-                    let fontSize = baseFontSize; // Use the dynamic size
-
-                    switch (colorName) {
-                        case 'blue':
-                            fontFamily = 'sans-serif';
-                            fontWeight = '300'; // Thin font
-                            break;
-                        case 'red':
-                            fontFamily = 'sans-serif';
-                            fontWeight = '900'; // Bold font
-                            break;
-                        case 'green':
-                            fontFamily = "'Times New Roman', Times, serif"; // Serif font
-                            fontWeight = 'normal'; // Will vary by rank
-                            break;
-                        case 'yellow':
-                            fontFamily = "'Cursive', cursive"; // Calligraphy/Script font
-                            fontWeight = 'normal'; // Will vary by rank
-                            // Script font often needs more space, so scale it up slightly if possible
-                            fontSize = `${dynamicFontSizePx * 1.1}px`; 
-                            break;
-                    }
-
-                    // Build the HTML content for the words as "tags"
-                    const wordsHtml = wordsToShow.map(word => {
-                        
-                        let finalWeight = fontWeight;
-                        // For Green/Yellow, vary weight by rank. Blue/Red are fixed.
-                        if (colorName === 'green' || colorName === 'yellow') {
-                            if (word.rank == 1) finalWeight = '700';
-                            else if (word.rank == 2) finalWeight = '500';
-                            else if (word.rank == 3) finalWeight = '400';
-                            else finalWeight = '300';
-                        }
-                        
-                        // Use opacity for all to show rank (stronger differentiation)
-                        let opacity = '1.0';
-                        if (word.rank == 2) opacity = '0.7'; // More pronounced opacity reduction
-                        else if (word.rank == 3) opacity = '0.5';
-                        else if (word.rank == 4) opacity = '0.3';
-
-                        // Use the calculated fontSize
-                        const wordTagStyle = `
-                            font-family: ${fontFamily}; 
-                            font-weight: ${finalWeight}; 
-                            font-size: ${fontSize};
-                            opacity: ${opacity};
-                            color: #1f2937; /* Very dark text for max contrast */
-                            display: block; 
-                            text-align: center;
-                            line-height: 1.4; /* Set line height relative to the dynamic font size */
-                        `;
-
-                        return `<span style="${wordTagStyle.replace(/\s+/g, ' ')}">${word.text}</span>`;
-                    }).join('');
-
-                    // --- Layout Improvement: Changed to flex-direction: column and removed flex-wrap/gap ---
-                    const htmlContent = `
-                        <div xmlns="http://www.w3.org/1999/xhtml" 
-                             style="width: ${scaledSide}px; height: ${scaledSide}px; 
-                                    font-family: sans-serif; 
-                                    overflow-y: hidden; 
-                                    padding: 10px 5px; /* Increased top/bottom padding slightly */
-                                    box-sizing: border-box;
-                                    display: flex; flex-direction: column; /* Stack words vertically */
-                                    align-items: center; /* Center horizontally */
-                                    justify-content: center; /* Center vertically (as a group) */
-                                    text-align: center;">
-                            ${wordsHtml}
-                        </div>
-                    `;
-                    // --- END NEW LOGIC ---
-
-
-                    // Append the foreignObject
-                    chartGroup.append("foreignObject")
-                        .attr("x", x) // Position it at the same spot as the rect
-                        .attr("y", y)
-                        .attr("width", scaledSide) // Give it the same size
-                        .attr("height", scaledSide)
-                        .html(htmlContent);
-                        
-                }
-                
-            });
-
-            // --- CHANGED: REMOVED the axes ---
-            /*
-            const axisColor = "#4b5563"; 
-            const axisWidth = 2;
-            
-            chartGroup.append("line")
-                .attr("x1", 0).attr("y1", -maxRadius)
-                .attr("x2", 0).attr("y2", maxRadius)
-                .attr("stroke", axisColor).attr("stroke-width", axisWidth);
-
-            chartGroup.append("line")
-                .attr("x1", -maxRadius).attr("y1", 0)
-                .attr("x2", maxRadius).attr("y2", 0)
-                .attr("stroke", axisColor).attr("stroke-width", axisWidth);
-            */
-
-            // --- CHANGED: REMOVED the average RECTANGLE ---
-            /*
-            chartGroup.append("rect")
-                .attr("x", -averageScaledSide)
-                .attr("y", -averageScaledSide)
-                .attr("width", averageScaledSide * 2)
-                .attr("height", averageScaledSide * 2)
-                .attr("fill", "none")
-                .attr("stroke", "#6b7280")
-                .attr("stroke-width", 2)
-                .attr("stroke-dasharray", "4 4");
-            */
-        }
-        // --- END NEW FUNCTION ---
-
-
-        <!-- CHART 2: AREA (TRIANGLE) CHART (REMOVED) -->
         
-        <!-- CHART 3: DONUT CHART (REMOVED) -->
-
-        <!-- CHART 4: PIE CHART -->
+        // --- CHART: PIE CHART ---
         function drawPieChart(scores) {
             const container = document.getElementById('pie-chart-container');
             if (!container) return;
             const width = container.clientWidth;
             const height = container.clientHeight;
             const radius = Math.min(width, height) / 2 * 0.9;
-            const innerRadius = 0; // The only difference from Donut Chart
+            const innerRadius = 0; 
 
             const svg = d3.select("#pie-chart")
                 .attr("viewBox", `0 0 ${width} ${height}`)
@@ -1154,7 +919,7 @@
 
             const data = [
                 { name: "Blue", value: scores.blue, color: "#3B82F6" },
-                { name: "Red", value: scores.red, color: "#EF4444", color: "#EF4444" },
+                { name: "Red", value: scores.red, color: "#EF4444" },
                 { name: "Green", value: scores.green, color: "#22C55E" },
                 { name: "Yellow", value: scores.yellow, color: "#FACC15" }
             ].filter(d => d.value > 0);
@@ -1192,6 +957,224 @@
                 });
         }
 
+        // --- CHART: QUADRANT CHART (RECTANGLE) ---
+        function drawQuadrantChartRectangle(scores) {
+            const chartContainer = document.getElementById('quadrant-chart-rect-container');
+            if (!chartContainer) return;
+            const width = chartContainer.clientWidth;
+            const height = chartContainer.clientHeight;
+            
+            const svg = d3.select("#quadrant-chart-rect")
+                .attr("viewBox", `0 0 ${width} ${height}`)
+                .attr("preserveAspectRatio", "xMidYMid meet");
+            svg.html("");
+
+            const centerX = width / 2;
+            const centerY = height / 2;
+
+            const data = [
+                { name: "Blue", value: scores.blue, color: "#3B82F6", quadrant: 'top-left' },
+                { name: "Red", value: scores.red, color: "#EF4444", quadrant: 'top-right' },
+                { name: "Green", value: scores.green, color: "#22C55E", quadrant: 'bottom-left' },
+                { name: "Yellow", value: scores.yellow, color: "#FACC15", quadrant: 'bottom-right' }
+            ];
+
+            const maxPossibleScore = 240;
+            const maxPossibleSide = Math.sqrt(maxPossibleScore);
+            const maxRadius = Math.min(width / 2, height / 2) * 0.95; 
+            const scale = maxRadius / maxPossibleSide; 
+
+            const averageScore = 120;
+            const averageSide = Math.sqrt(averageScore);
+            const averageScaledSide = averageSide * scale;
+
+            const chartGroup = svg.append("g")
+                .attr("transform", `translate(${centerX}, ${centerY})`);
+
+            // --- Draw the squares FIRST ---
+            data.forEach(d => {
+                d.side = Math.sqrt(d.value);
+                const scaledSide = d.side * scale; 
+
+                let x, y, textX, textY;
+                switch (d.quadrant) {
+                    case 'top-left': x = -scaledSide; y = -scaledSide; textX = -scaledSide / 2; textY = -scaledSide / 2; break;
+                    case 'top-right': x = 0; y = -scaledSide; textX = scaledSide / 2; textY = -scaledSide / 2; break;
+                    case 'bottom-left': x = -scaledSide; y = 0; textX = -scaledSide / 2; textY = scaledSide / 2; break;
+                    case 'bottom-right': x = 0; y = 0; textX = scaledSide / 2; textY = scaledSide / 2; break;
+                }
+
+                chartGroup.append("rect")
+                    .attr("x", x)
+                    .attr("y", y)
+                    .attr("width", scaledSide)
+                    .attr("height", scaledSide)
+                    .attr("fill", d.color);
+
+                if (scaledSide > 60) {
+                    chartGroup.append("text")
+                        .attr("class", "chart-label-title")
+                        .attr("x", textX)
+                        .attr("y", textY - 10)
+                        .text(d.name);
+                    chartGroup.append("text")
+                        .attr("class", "chart-label-score")
+                        .attr("x", textX)
+                        .attr("y", textY + 16)
+                        .text(d.value);
+                }
+            });
+
+            // --- Draw the axes to divide colors ---
+            const axisColor = "#4b5563"; // gray-600
+            const axisWidth = 2;
+            
+            chartGroup.append("line")
+                .attr("x1", 0).attr("y1", -maxRadius)
+                .attr("x2", 0).attr("y2", maxRadius)
+                .attr("stroke", axisColor).attr("stroke-width", axisWidth);
+
+            chartGroup.append("line")
+                .attr("x1", -maxRadius).attr("y1", 0)
+                .attr("x2", maxRadius).attr("y2", 0)
+                .attr("stroke", axisColor).attr("stroke-width", axisWidth);
+
+            // --- Draw the average RECTANGLE LAST (so it's on top) ---
+            chartGroup.append("rect")
+                .attr("x", -averageScaledSide)
+                .attr("y", -averageScaledSide)
+                .attr("width", averageScaledSide * 2)
+                .attr("height", averageScaledSide * 2)
+                .attr("fill", "none")
+                .attr("stroke", "#6b7280") // gray-500
+                .attr("stroke-width", 2)
+                .attr("stroke-dasharray", "4 4"); // Make it dashed
+        }
+        
+        // --- NEW: RESULT PAGE BUILDER FUNCTIONS ---
+        function getDominantColor(scores) {
+            let dominantColor = 'blue'; // Default
+            let maxScore = 0;
+            for (const color in scores) {
+                if (scores[color] > maxScore) {
+                    maxScore = scores[color];
+                    dominantColor = color;
+                }
+            }
+            return dominantColor;
+        }
+
+        function buildPersonalizedReport(scores, rankedWords, dominantColor) {
+            const data = profileDataStore[dominantColor];
+            const colorClass = `text-${dominantColor}-600`;
+            
+            // 1. Profile Title
+            const titleContainer = document.getElementById('profile-title-container');
+            titleContainer.innerHTML = `
+                <h1 class="text-4xl md:text-5xl font-bold ${colorClass}">${data.title}</h1>
+                <p class="text-lg text-gray-600 mt-2">${data.summary}</p>
+            `;
+
+            // 2. At a Glance
+            const glanceContainer = document.getElementById('at-a-glance-container');
+            const glanceItems = Object.entries(data.atAGlance).map(([key, value]) => {
+                return `<div class="bg-gray-100 p-3 rounded-lg shadow-sm">
+                            <dt class="text-sm font-medium text-gray-500">${key}</dt>
+                            <dd class="text-lg font-semibold text-gray-900">${value}</dd>
+                        </div>`;
+            }).join('');
+            glanceContainer.innerHTML = `
+                <h2 class="text-3xl font-bold text-center text-gray-800 mb-6">At a Glance</h2>
+                <dl class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    ${glanceItems}
+                </dl>
+            `;
+
+            // 3. Key Word Quadrant (This is called separately)
+            populateWordAnalysis(scores, rankedWords);
+
+            // 4. Strengths & Blind Spots
+            const strengthsContainer = document.getElementById('strengths-blindspots-container');
+            const strengthsHtml = data.strengths.map(item => `<li class="text-gray-700">${item}</li>`).join('');
+            const blindSpotsHtml = data.blindSpots.map(item => `<li class="text-gray-700">${item}</li>`).join('');
+            strengthsContainer.innerHTML = `
+                <h2 class="text-3xl font-bold text-center text-gray-800 mb-6">Strengths & Potential Blind Spots</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-px bg-gray-300 rounded-lg shadow-md overflow-hidden">
+                    <div class="bg-green-100 p-6">
+                        <h3 class="text-2xl font-bold text-green-800 mb-4">Your Strengths</h3>
+                        <ul class="list-disc list-inside space-y-1">
+                            ${strengthsHtml}
+                        </ul>
+                    </div>
+                    <div class="bg-red-100 p-6">
+                        <h3 class="text-2xl font-bold text-red-800 mb-4">Potential Blind Spots</h3>
+                        <ul class="list-disc list-inside space-y-1">
+                            ${blindSpotsHtml}
+                        </ul>
+                    </div>
+                </div>
+            `;
+
+            // 5. Communication
+            const commContainer = document.getElementById('communication-container');
+            const commTipsHtml = data.communicationTips.map(item => `<li class="text-gray-800">${item}</li>`).join('');
+            commContainer.innerHTML = `
+                <h2 class="text-3xl font-bold text-center text-gray-800 mb-6">How to Communicate with ${data.title}s</h2>
+                <div class="bg-gray-50 p-6 rounded-lg shadow-inner">
+                    <ul class="list-disc list-inside space-y-2">
+                        ${commTipsHtml}
+                    </ul>
+                </div>
+            `;
+
+            // 6. Highlight Analysis Grid (REMOVED)
+            // highlightAnalysis(dominantColor);
+            
+            // 7. NEW: Activate the Style Explorer
+            activateStyleExplorer(dominantColor);
+        }
+
+        // --- NEW: Style Explorer Functions ---
+        function activateStyleExplorer(dominantColor) {
+            const tabs = styleExplorerTabs.querySelectorAll('.style-tab');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => showStyleSummary(tab.dataset.color));
+            });
+            // Auto-select the dominant color
+            showStyleSummary(dominantColor);
+        }
+        
+        function showStyleSummary(color) {
+            // 1. Update Tab Active State
+            styleExplorerTabs.querySelectorAll('.style-tab').forEach(tab => {
+                tab.classList.remove('active-blue', 'active-red', 'active-green', 'active-yellow');
+                if (tab.dataset.color === color) {
+                    tab.classList.add(`active-${color}`);
+                }
+            });
+
+            // 2. Get data
+            const data = profileDataStore[color].fullSummary;
+            if (!data) {
+                styleExplorerContent.innerHTML = `<p>Error: No data found for ${color}.</p>`;
+                return;
+            }
+
+            // 3. Build HTML
+            const summaryItems = Object.entries(data).map(([key, value]) => {
+                return `<div class="bg-white p-4 rounded-lg shadow-sm">
+                            <dt class="text-sm font-medium text-gray-500">${key}</dt>
+                            <dd class="text-lg font-semibold text-gray-900">${value}</dd>
+                        </div>`;
+            }).join('');
+            
+            styleExplorerContent.innerHTML = `
+                <dl class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    ${summaryItems}
+                </dl>
+            `;
+        }
+        
         // --- DRAG AND DROP HANDLERS ---
         
         function handleDragStart(e) {
@@ -1205,9 +1188,6 @@
         }
 
         function handleDragEnd(e) {
-            // This is a cleanup function for drops that *don't* land in a valid dropzone
-            // (e.g., dropped outside the window)
-            // --- FIX V3: Check if item still being tracked ---
             if (draggedItem) {
                 draggedItem.classList.remove('dragging');
             }
@@ -1219,7 +1199,6 @@
             e.preventDefault();
             const dropzone = e.target.closest('.drop-spot, .word-bank-dropzone');
             if (dropzone) {
-                // Prevent dropping a word in a full spot *that isn't the one it came from*
                 if (dropzone.classList.contains('drop-spot') && dropzone.children.length > 1 && draggedItem && draggedItem.parentElement !== dropzone) {
                     // This is a full spot, don't highlight
                 } else {
@@ -1238,55 +1217,44 @@
         function handleDrop(e) {
             e.preventDefault();
             
-            // --- FIX V4: Use a local variable and clear global immediately ---
-            if (!draggedItem) return; // A drop event somehow fired without a dragged item
-            const itemToDrop = draggedItem; // "Claim" the item
-            draggedItem = null; // Clear global immediately
-            itemToDrop.classList.remove('dragging'); // Stop the dragging style
-            // --- END FIX V4 ---
+            if (!draggedItem) return; 
+            const itemToDrop = draggedItem; 
+            draggedItem = null; 
+            itemToDrop.classList.remove('dragging'); 
 
             const dropzone = e.target.closest('.drop-spot, .word-bank-dropzone');
-            if (!dropzone) return; // Didn't land in a valid spot
+            if (!dropzone) return; 
 
             dropzone.classList.remove('highlight');
             const card = dropzone.closest('.question-card');
             
-            // Case 1: Dropping in a Rank Spot
             if (dropzone.classList.contains('drop-spot')) {
-                // If spot is already full, move existing word back to bank
-                if (dropzone.children.length > 1) { // 2 children = labels + word
+                if (dropzone.children.length > 1) { 
                     const existingWord = dropzone.querySelector('.draggable-word');
-                    if (existingWord && existingWord !== itemToDrop) { // Don't move item if dropping on self
+                    if (existingWord && existingWord !== itemToDrop) { 
                         card.querySelector('.word-bank-dropzone').appendChild(existingWord);
                     }
                 }
-                dropzone.appendChild(itemToDrop); // Use local copy
+                dropzone.appendChild(itemToDrop); 
                 dropzone.classList.add('drop-spot-filled');
             }
             
-            // Case 2: Dropping back in the Word Bank
             if (dropzone.classList.contains('word-bank-dropzone')) {
-                const originalSpot = itemToDrop.closest('.drop-spot'); // Use local copy
+                const originalSpot = itemToDrop.closest('.drop-spot'); 
                 if (originalSpot) {
                     originalSpot.classList.remove('drop-spot-filled');
                 }
-                dropzone.appendChild(itemToDrop); // Use local copy
+                dropzone.appendChild(itemToDrop); 
             }
             
-            // Validate the card that was just changed
             if (card) {
                 validateCard(card);
                 
-                // --- FIX for Save Button Bug ---
                 if (currentQuestionIndex === totalQuestions - 1) {
-                    // We are on the last question, so check ALL cards
-                    // to see if the save button should be enabled.
                     checkFormCompletion(true);
                 } else {
-                    // We are on a normal question, just check the 'next' button.
                     checkFormCompletion(false);
                 }
-                // --- END FIX ---
             }
         }
 
@@ -1314,23 +1282,22 @@
                 checkFormCompletion(true); // Final check
                 if (!saveButton.disabled) {
                     
-                    // NEW: Collect both scores and words
                     const { scores, rankedWords } = collectRankedWords();
+                    const dominantColor = getDominantColor(scores);
                     
                     testPage.classList.add('hidden');
                     resultsPage.classList.remove('hidden');
 
                     setTimeout(() => {
-                        // NEW: Populate the Key Words section
-                        populateWordAnalysis(scores, rankedWords); // <-- Pass scores in
-                        
-                        // Call all other charts
-                        // drawQuadrantChart(scores); // <-- REMOVED
-                        // drawQuadrantChartNoAxis(scores); // <-- REMOVED
-                        drawQuadrantChartRectangle(scores); 
-                        drawQuadrantChartWords(scores, rankedWords); // <-- ADDED THIS CALL
-                        // drawDonutChart(scores); // <-- REMOVED
+                        // --- NEW ORDER ---
+                        // 1. Draw Pie Chart (First)
                         drawPieChart(scores); 
+                        // 2. Draw Quadrant Chart
+                        drawQuadrantChartRectangle(scores); 
+                        
+                        // 3. Build the rest of the report (which now includes the explorer)
+                        buildPersonalizedReport(scores, rankedWords, dominantColor);
+                        // --- END NEW ORDER ---
                     }, 10); 
 
                     successMessage.textContent = 'Answers saved and results calculated!';
